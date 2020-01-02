@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Unity对象池封装 | Bouvet</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://bouvet1.github.io/favicon.ico?v=1577945956234">
+<link rel="stylesheet" href="https://bouvet1.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="一共分为两个类，SubPool与ObjectPool，SubPool类为总对象池包含ObjectPool的子池子，ObjectPool包含需要入池的对象。
+调用方法：
+
+入池：ObjectPool.Instance.Spawn()
+出池：O..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://bouvet1.github.io">
+        <img src="https://bouvet1.github.io/images/avatar.png?v=1577945956234" class="site-logo">
+        <h1 class="site-title">Bouvet</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="https://bouvet1.github.io/post/doc" class="site-nav" target="_blank">
+            文档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      至繁归于至简
+    </div>
+    <div class="site-footer">
+       | <a class="rss" href="https://bouvet1.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Unity对象池封装</h2>
+            <div class="post-date">2020-01-02</div>
+            
+            <div class="post-content" v-pre>
+              <p>一共分为两个类，SubPool与ObjectPool，SubPool类为总对象池包含ObjectPool的子池子，ObjectPool包含需要入池的对象。</p>
+<p>调用方法：</p>
+<ul>
+<li>入池：ObjectPool.Instance.Spawn()</li>
+<li>出池：ObjectPool.Instance.UnSpawn()</li>
+<li>全部出池：ObjectPool.Instance.UnSpawnAll()</li>
+<li>销毁池子：ObjectPool.Instance.DisPool();</li>
+</ul>
+<p>SubPool类(继承至单例父类)</p>
+<pre><code>using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+public class SubPool
+{
+    List&lt;GameObject&gt; Pool=new List&lt;GameObject&gt;();
+
+    /// &lt;summary&gt;
+    /// 入池
+    /// &lt;/summary&gt;
+    public GameObject Spawn(string obj)
+    {
+            foreach (GameObject item in Pool)
+            {
+                if (!item.activeSelf)
+                {
+                    item.SetActive(true);
+                    item.SendMessage(&quot;Spawn&quot;,SendMessageOptions.DontRequireReceiver);
+                    return item;
+                }
+            }
+        GameObject go = CreateObj(obj);
+        Pool.Add(go);
+       go.SendMessage(&quot;Spawn&quot;,SendMessageOptions.DontRequireReceiver);
+        return go;
+    }
+
+/// &lt;summary&gt;
+/// 出池
+/// &lt;/summary&gt;
+/// &lt;param name=&quot;go&quot;&gt;&lt;/param&gt;
+ public void UnSpawn(GameObject go=null,string goname=&quot;&quot;)
+    {
+        if (go!=null)
+        {
+            go.SetActive(false);
+        }
+        else
+        {
+            for (int i = 0; i &lt; Pool.Count; i++)
+            {
+                if (Pool[i].activeSelf)
+                {
+                    Pool[i].SetActive(false);
+                    return;
+                }
+            }
+        }
+    }
+
+/// &lt;summary&gt;
+/// 全部出池
+/// &lt;/summary&gt;
+public void UnSpawnAll()
+    {
+        foreach (GameObject item in Pool)
+        {
+            item.SetActive(false);
+        }
+    }
+
+    /// &lt;summary&gt;
+    /// 创建对象
+    /// &lt;/summary&gt;
+    GameObject CreateObj(string obj)
+    {
+        GameObject go = GameObject.Instantiate(Resources.Load(&quot;Prefabs/Others/&quot;+obj) as GameObject);
+        go.transform.SetParent(GameObject.Find(&quot;Pool&quot;).transform, false);
+        go.name = go.name.Replace(&quot;(Clone)&quot;, &quot;&quot;);
+        return go;
+    }
+}
+
+</code></pre>
+<p>ObjectPool类</p>
+<pre><code>using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using Framework;
+
+public class ObjectPool:Manager&lt;ObjectPool&gt;
+{
+    ObjectPool()
+    {
+    }
+
+    Dictionary&lt;string,SubPool&gt; pools= new Dictionary&lt;string, SubPool&gt;();
+    
+    /// &lt;summary&gt;
+    /// 入池
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;obj&quot;&gt;创建的对象名&lt;/param&gt;
+    public GameObject Spawn(string obj)
+    {
+            if (pools.ContainsKey(obj))
+            {
+                return pools[obj].Spawn(obj);
+            }
+            else
+            {
+                SubPool sp = new SubPool();
+               var go = sp.Spawn(obj);
+                pools.Add(obj, sp);
+                return go;
+            }
+        return null;
+    }
+
+    /// &lt;summary&gt;
+    /// 出池
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;go&quot;&gt;需要出池对象&lt;/param&gt;
+    public void UnSpawn(GameObject go=null,string goName=&quot;&quot;)
+    {
+        if (!go)
+        {
+            if (pools.ContainsKey(goName))
+            {
+                pools[goName].UnSpawn(null,goName);
+            }
+        }
+        else
+        {
+            if (pools.ContainsKey(go.name))
+            {
+                pools[go.name].UnSpawn(go);
+            }
+        }
+
+    }
+
+    /// &lt;summary&gt;
+    /// 全部出池
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;pool&quot;&gt;出池的名称&lt;/param&gt;
+    public void UnSpawnAll(string pool)
+    {
+        if (pools.ContainsKey(pool))
+        {
+            pools[pool].UnSpawnAll();
+        }
+    }
+
+    /// &lt;summary&gt;
+    /// 销毁池子
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;pool&quot;&gt;销毁池的名称&lt;/param&gt;
+    public void DisPool(string pool)
+    {
+        if (pools.ContainsKey(pool))
+        {
+            pools.Remove(pool);
+        }
+    }
+
+
+}
+
+</code></pre>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://bouvet1.github.io/post/unity54-ugui-zhi-zuo-shi-shi-shu-ju-xian-xing-tu-biao">
+                  <h3 class="post-title">
+                    Unity5.4 UGUI制作实时数据线性图表
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>关于 | Bouvet</title>
+<title>Unity5.4 利用函数设置副物体跟随主物体旋转 | Bouvet</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
@@ -18,14 +18,12 @@
 
 
 
-    <meta name="description" content="
-欢迎来到我的小站呀，很高兴遇见你！🤝
+    <meta name="description" content="效果(用鼠标控制副物体旋转)：
 
-🏠 关于本站
-👨‍💻 博主是谁
-⛹ 兴趣爱好
-📬 联系我呀
-..." />
+通公式获取圆的下一个坐标位置：
+x = vector3.x + r * cos(angle * PI / 180)
+z = Vector3.z + r * sin(angle * PI /180)
+源代码:..." />
     <meta name="keywords" content="" />
   </head>
   <body>
@@ -103,20 +101,52 @@
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
           <div class="post-detail">
-            <h2 class="post-title">关于</h2>
-            <div class="post-date">2019-01-25</div>
+            <h2 class="post-title">Unity5.4 利用函数设置副物体跟随主物体旋转</h2>
+            <div class="post-date">2020-01-02</div>
             
             <div class="post-content" v-pre>
-              <blockquote>
-<p>欢迎来到我的小站呀，很高兴遇见你！🤝</p>
-</blockquote>
-<h2 id="关于本站">🏠 关于本站</h2>
-<h2 id="博主是谁">👨‍💻 博主是谁</h2>
-<h2 id="兴趣爱好">⛹ 兴趣爱好</h2>
-<h2 id="联系我呀">📬 联系我呀</h2>
+              <p>效果(用鼠标控制副物体旋转)：<br>
+<img src="http://upload-images.jianshu.io/upload_images/101711-d568ccdf589f0617.gif?imageMogr2/auto-orient/strip" alt="image" loading="lazy"></p>
+<p>通公式获取圆的下一个坐标位置：<br>
+x = vector3.x + r * cos(angle * PI / 180)<br>
+z = Vector3.z + r * sin(angle * PI /180)<br>
+源代码:</p>
+<pre><code>public class Test : MonoBehaviour
+{
+    private Transform CylinderTranform;
+    private float r;
+    // Use this for initialization
+    void Start()
+    {
+        CylinderTranform = GameObject.Find(&quot;Cylinder&quot;).transform;//获取主物体坐标
+         r = Vector3.Distance(transform.position, CylinderTranform.position);//获取主物体与跟随物体距离，即半径
+    }
+
+    float MouseX;
+    // Update is called once per frame
+    void Update()
+    {
+        transform.LookAt(CylinderTranform);
+        MouseX += Input.GetAxis(&quot;Mouse X&quot;)*5;//获取鼠标位置*5
+        //主物体X+半径*cos(鼠标位置*pi/180)
+        var x = CylinderTranform.position.x + r*Mathf.Cos(-MouseX*Mathf.PI/180);
+        var z = CylinderTranform.position.z + r*Mathf.Sin(-MouseX*Mathf.PI/180);
+        transform.position = new Vector3(x, CylinderTranform.position.y, z);
+    }
+}
+</code></pre>
 
             </div>
             
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://bouvet1.github.io/post/unity54-bao-cun-ri-zhi-ji-lu-txt-wen-jian-dao-ben-di">
+                  <h3 class="post-title">
+                    Unity5.4 保存日志记录TXT文件到本地
+                  </h3>
+                </a>
+              </div>
             
 
             

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>关于 | Bouvet</title>
+<title>unity5.4 通过计时器方法实现执行时间间隔与延时执行 | Bouvet</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
@@ -18,14 +18,9 @@
 
 
 
-    <meta name="description" content="
-欢迎来到我的小站呀，很高兴遇见你！🤝
-
-🏠 关于本站
-👨‍💻 博主是谁
-⛹ 兴趣爱好
-📬 联系我呀
-..." />
+    <meta name="description" content="协程方法实现必须继承MonoBehaviour类，如果写的类不继承MonoBehaviour就无法使用，只能通过计时器来写。不过也有个好处，写成timer类所有需要延迟执行的方法都可以调用。
+代码如下：
+using UnityEngine;..." />
     <meta name="keywords" content="" />
   </head>
   <body>
@@ -103,20 +98,54 @@
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
           <div class="post-detail">
-            <h2 class="post-title">关于</h2>
-            <div class="post-date">2019-01-25</div>
+            <h2 class="post-title">unity5.4 通过计时器方法实现执行时间间隔与延时执行</h2>
+            <div class="post-date">2020-01-02</div>
             
             <div class="post-content" v-pre>
-              <blockquote>
-<p>欢迎来到我的小站呀，很高兴遇见你！🤝</p>
-</blockquote>
-<h2 id="关于本站">🏠 关于本站</h2>
-<h2 id="博主是谁">👨‍💻 博主是谁</h2>
-<h2 id="兴趣爱好">⛹ 兴趣爱好</h2>
-<h2 id="联系我呀">📬 联系我呀</h2>
+              <p>协程方法实现必须继承MonoBehaviour类，如果写的类不继承MonoBehaviour就无法使用，只能通过计时器来写。不过也有个好处，写成timer类所有需要延迟执行的方法都可以调用。</p>
+<p>代码如下：</p>
+<pre><code>using UnityEngine;
+
+public class Test : MonoBehaviour
+{
+    private bool choose = true;
+    private float timer;
+    public void Timer()
+    {
+        if (choose == false)
+        {
+            timer += Time.deltaTime;//开始计时
+            if (timer &gt; 2)//延迟2S执行
+            {
+                choose = true;
+                timer = 0;
+            }
+        }
+    }
+    void Update ()
+    {   
+        Timer();
+        if (Input.GetKeyDown(KeyCode.Mouse0)&amp;&amp;choose==true)
+        {
+            choose = false;
+            Debug.Log(&quot;run&quot;);
+        }
+    }
+}
+
+</code></pre>
 
             </div>
             
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://bouvet1.github.io/post/unity-54-wei-mo-xing-zu-yi-jian-tian-jia-peng-zhuang-ti-collidercha-jian">
+                  <h3 class="post-title">
+                    Unity 5.4 为模型组一键添加碰撞体(Collider)插件
+                  </h3>
+                </a>
+              </div>
             
 
             

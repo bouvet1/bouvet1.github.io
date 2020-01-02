@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://bouvet1.github.io</id>
     <title>Bouvet</title>
-    <updated>2020-01-02T05:56:43.912Z</updated>
+    <updated>2020-01-02T06:20:01.573Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://bouvet1.github.io"/>
     <link rel="self" href="https://bouvet1.github.io/atom.xml"/>
@@ -10,4 +10,1103 @@
     <logo>https://bouvet1.github.io/images/avatar.png</logo>
     <icon>https://bouvet1.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Bouvet</rights>
+    <entry>
+        <title type="html"><![CDATA[Uniy5.4 实现动态3D图表效果(二)：添加缓动动画]]></title>
+        <id>https://bouvet1.github.io/post/uniy54-shi-xian-dong-tai-3d-tu-biao-xiao-guo-er-tian-jia-huan-dong-dong-hua</id>
+        <link href="https://bouvet1.github.io/post/uniy54-shi-xian-dong-tai-3d-tu-biao-xiao-guo-er-tian-jia-huan-dong-dong-hua">
+        </link>
+        <updated>2020-01-02T06:19:08.000Z</updated>
+        <content type="html"><![CDATA[<p>效果图(gif)：<img src="http://upload-images.jianshu.io/upload_images/101711-e345d2c0d644131b.gif?imageMogr2/auto-orient/strip" alt="" loading="lazy"></p>
+<p>代码(需要插件DOTween)：</p>
+<pre><code>using UnityEngine;
+using System.Collections;
+using DG.Tweening;
+using UnityEngine.EventSystems;
+
+public class Data : MonoBehaviour
+{
+    public int Time=5;
+    private Vector3 vertice;//作为中间传值的顶点vector
+    public  Vector3[] vertices;
+    private Mesh mesh;
+    [Range(0, 10)]
+    public float value = 10;//设置高度值
+    void Start()
+    {
+        vertices = GetComponent&lt;MeshFilter&gt;().mesh.vertices;//获取Gameobject meshfilter组件
+        mesh = GetComponent&lt;MeshFilter&gt;().mesh;//获取meshfilter组件中mesh数组数据
+    }
+
+    void Update()
+    {
+        for (int i = 0; i &lt; vertices.Length; i++)//遍历数组
+        {
+
+            if (vertices[i].y &gt;= 0f)//判断mesh是否为顶部
+            {
+                vertice.x = vertices[i].x;
+                vertice.z = vertices[i].z;
+                DOTween.To(() =&gt; vertice, x =&gt; vertice = x, new Vector3(vertice.x, value, vertice.y), Time);//通过DoTween设置vertice值
+                vertices[i]= vertice; //将vertice值传递给vertices[i]
+            }
+        }
+        mesh.vertices = vertices;//刷新
+    }
+}
+</code></pre>
+<p>项目地址：https://github.com/baishuisr1/Unity-3D-Chart</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Uniy5.4 实现动态3D图表效果(一)]]></title>
+        <id>https://bouvet1.github.io/post/uniy54-shi-xian-dong-tai-3d-tu-biao-xiao-guo-yi</id>
+        <link href="https://bouvet1.github.io/post/uniy54-shi-xian-dong-tai-3d-tu-biao-xiao-guo-yi">
+        </link>
+        <updated>2020-01-02T06:19:00.000Z</updated>
+        <content type="html"><![CDATA[<p>原本想使用插件来做，奈何囊中羞涩，只能自己写了。通过Value值修改高度。效果图：<br>
+<img src="http://upload-images.jianshu.io/upload_images/101711-55674da7f3c5586a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image" loading="lazy"><br>
+代码：</p>
+<pre><code>using UnityEngine;
+using System.Collections;
+using UnityEngine;
+using System.Collections;
+
+public class cube : MonoBehaviour
+{
+    private Vector3[] vertices;
+    private Mesh mesh;
+    [Range(0, 10)]
+    public float value = 1;//设置高度值
+    // Use this for initialization
+    void Start()
+    {
+        vertices = GetComponent&lt;MeshFilter&gt;().mesh.vertices;//获取Gameobject meshfilter组件
+        mesh = GetComponent&lt;MeshFilter&gt;().mesh;//获取meshfilter组件中mesh数组数据
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        for (int i = 0; i &lt; vertices.Length; i++)//遍历数组
+        {
+
+            if (vertices[i].y &gt;= 0f)//判断mesh是否为顶部
+            {
+                vertices[i].y = value;//设置mesh顶部高度等于高度值
+            }
+        }
+        mesh.vertices = vertices;//刷新
+    }
+}
+</code></pre>
+<p>项目地址：https://github.com/baishuisr1/Unity-3D-Chart</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Unity对象池封装]]></title>
+        <id>https://bouvet1.github.io/post/unity-dui-xiang-chi-feng-zhuang</id>
+        <link href="https://bouvet1.github.io/post/unity-dui-xiang-chi-feng-zhuang">
+        </link>
+        <updated>2020-01-02T06:18:36.000Z</updated>
+        <content type="html"><![CDATA[<p>一共分为两个类，SubPool与ObjectPool，SubPool类为总对象池包含ObjectPool的子池子，ObjectPool包含需要入池的对象。</p>
+<p>调用方法：</p>
+<ul>
+<li>入池：ObjectPool.Instance.Spawn()</li>
+<li>出池：ObjectPool.Instance.UnSpawn()</li>
+<li>全部出池：ObjectPool.Instance.UnSpawnAll()</li>
+<li>销毁池子：ObjectPool.Instance.DisPool();</li>
+</ul>
+<p>SubPool类(继承至单例父类)</p>
+<pre><code>using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+public class SubPool
+{
+    List&lt;GameObject&gt; Pool=new List&lt;GameObject&gt;();
+
+    /// &lt;summary&gt;
+    /// 入池
+    /// &lt;/summary&gt;
+    public GameObject Spawn(string obj)
+    {
+            foreach (GameObject item in Pool)
+            {
+                if (!item.activeSelf)
+                {
+                    item.SetActive(true);
+                    item.SendMessage(&quot;Spawn&quot;,SendMessageOptions.DontRequireReceiver);
+                    return item;
+                }
+            }
+        GameObject go = CreateObj(obj);
+        Pool.Add(go);
+       go.SendMessage(&quot;Spawn&quot;,SendMessageOptions.DontRequireReceiver);
+        return go;
+    }
+
+/// &lt;summary&gt;
+/// 出池
+/// &lt;/summary&gt;
+/// &lt;param name=&quot;go&quot;&gt;&lt;/param&gt;
+ public void UnSpawn(GameObject go=null,string goname=&quot;&quot;)
+    {
+        if (go!=null)
+        {
+            go.SetActive(false);
+        }
+        else
+        {
+            for (int i = 0; i &lt; Pool.Count; i++)
+            {
+                if (Pool[i].activeSelf)
+                {
+                    Pool[i].SetActive(false);
+                    return;
+                }
+            }
+        }
+    }
+
+/// &lt;summary&gt;
+/// 全部出池
+/// &lt;/summary&gt;
+public void UnSpawnAll()
+    {
+        foreach (GameObject item in Pool)
+        {
+            item.SetActive(false);
+        }
+    }
+
+    /// &lt;summary&gt;
+    /// 创建对象
+    /// &lt;/summary&gt;
+    GameObject CreateObj(string obj)
+    {
+        GameObject go = GameObject.Instantiate(Resources.Load(&quot;Prefabs/Others/&quot;+obj) as GameObject);
+        go.transform.SetParent(GameObject.Find(&quot;Pool&quot;).transform, false);
+        go.name = go.name.Replace(&quot;(Clone)&quot;, &quot;&quot;);
+        return go;
+    }
+}
+
+</code></pre>
+<p>ObjectPool类</p>
+<pre><code>using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using Framework;
+
+public class ObjectPool:Manager&lt;ObjectPool&gt;
+{
+    ObjectPool()
+    {
+    }
+
+    Dictionary&lt;string,SubPool&gt; pools= new Dictionary&lt;string, SubPool&gt;();
+    
+    /// &lt;summary&gt;
+    /// 入池
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;obj&quot;&gt;创建的对象名&lt;/param&gt;
+    public GameObject Spawn(string obj)
+    {
+            if (pools.ContainsKey(obj))
+            {
+                return pools[obj].Spawn(obj);
+            }
+            else
+            {
+                SubPool sp = new SubPool();
+               var go = sp.Spawn(obj);
+                pools.Add(obj, sp);
+                return go;
+            }
+        return null;
+    }
+
+    /// &lt;summary&gt;
+    /// 出池
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;go&quot;&gt;需要出池对象&lt;/param&gt;
+    public void UnSpawn(GameObject go=null,string goName=&quot;&quot;)
+    {
+        if (!go)
+        {
+            if (pools.ContainsKey(goName))
+            {
+                pools[goName].UnSpawn(null,goName);
+            }
+        }
+        else
+        {
+            if (pools.ContainsKey(go.name))
+            {
+                pools[go.name].UnSpawn(go);
+            }
+        }
+
+    }
+
+    /// &lt;summary&gt;
+    /// 全部出池
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;pool&quot;&gt;出池的名称&lt;/param&gt;
+    public void UnSpawnAll(string pool)
+    {
+        if (pools.ContainsKey(pool))
+        {
+            pools[pool].UnSpawnAll();
+        }
+    }
+
+    /// &lt;summary&gt;
+    /// 销毁池子
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;pool&quot;&gt;销毁池的名称&lt;/param&gt;
+    public void DisPool(string pool)
+    {
+        if (pools.ContainsKey(pool))
+        {
+            pools.Remove(pool);
+        }
+    }
+
+
+}
+
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Unity5.4 UGUI制作实时数据线性图表]]></title>
+        <id>https://bouvet1.github.io/post/unity54-ugui-zhi-zuo-shi-shi-shu-ju-xian-xing-tu-biao</id>
+        <link href="https://bouvet1.github.io/post/unity54-ugui-zhi-zuo-shi-shi-shu-ju-xian-xing-tu-biao">
+        </link>
+        <updated>2020-01-02T06:18:22.000Z</updated>
+        <content type="html"><![CDATA[<p>效果预览：<br>
+<img src="http://upload-images.jianshu.io/upload_images/101711-9badfc5da37b04de.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="1.gif" loading="lazy"></p>
+<p>使用方法：</p>
+<pre><code>//开始执行:浮动值，浮动值范围，X轴属性，Y轴属性,浮动线粗细
+DataSheet.DataSheet1.Setup(Value,100,X,Y,5);
+</code></pre>
+<p>源代码</p>
+<pre><code>using System;
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using DG.Tweening;
+using UnityEngine.UI;
+
+public class DataSheet
+{
+    private static DataSheet dataSheet;
+
+    public static DataSheet DataSheet1
+    {
+        get
+        {
+            if (dataSheet==null)
+            {
+                dataSheet=new DataSheet();
+            }
+            return dataSheet;
+        }
+    }
+
+    private Canvas canvas;
+    public int Quantity = 5;
+    private GameObject Line;
+    private GameObject DataPoint;
+    private RectTransform DataPointRectTramsform;
+    public  float LineThickness;
+    DataSheet()
+    {
+        canvas = GameObject.Find(&quot;Canvas&quot;).GetComponent&lt;Canvas&gt;();
+        Line = GameObject.Find(&quot;Line&quot;);
+        DataPoint = GameObject.Find(&quot;DataPoint&quot;);
+        DataPointRectTramsform = DataPoint.GetComponent&lt;RectTransform&gt;();
+    }
+
+    private float[] Values;
+    private List&lt;GameObject&gt; DataPoints;
+    private List&lt;GameObject&gt; Lines;
+    private List&lt;GameObject&gt; YLines=new List&lt;GameObject&gt;();
+    private float k;
+    private int ValueCount;
+    /// &lt;summary&gt;
+    /// 开始执行:浮动值，浮动值范围，X轴属性，Y轴属性,浮动线粗细
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;Value&quot;&gt;&lt;/param&gt;
+    /// &lt;param name=&quot;hight&quot;&gt;&lt;/param&gt;
+    /// &lt;param name=&quot;XNames&quot;&gt;&lt;/param&gt;
+    /// &lt;param name=&quot;YName&quot;&gt;&lt;/param&gt;
+    public void Setup(float Value,float hight,string[] XNames,string[] YNames,float LineThickness)
+    {
+        //生成数据点与线条
+        if (DataPoints == null)
+        {
+            this.LineThickness = LineThickness;
+            ValueCount =XNames.Length;
+            //生成数据点
+            Lines=new List&lt;GameObject&gt;();
+            DataPoints = new List&lt;GameObject&gt;();
+            var GoX = DataPointRectTramsform.rect.width / ValueCount;
+            var GoXStart = 0-(DataPointRectTramsform.rect.width / 2);
+            for (int i = 0; i &lt; ValueCount; i++)
+            {
+                GameObject Go = GameObject.Instantiate(Resources.Load&lt;GameObject&gt;(&quot;Prefabs/DataPoint&quot;));
+                Go.transform.SetParent(DataPoint.transform, false);
+                DataPoints.Add(Go);
+                Go.GetComponent&lt;RectTransform&gt;().localPosition = new Vector3(GoXStart+(GoX*(i+1)-GoX/2),-DataPointRectTramsform.rect.height/2);
+
+                //生成X轴属性名
+                GameObject Xname = GameObject.Instantiate(Resources.Load&lt;GameObject&gt;(&quot;Prefabs/NameText&quot;));
+                Xname.transform.SetParent(DataPoint.transform.parent.GetChild(2), false);
+                Xname.GetComponent&lt;Text&gt;().text = XNames[i];
+
+                if (i == ValueCount-1) { break; }
+                //生成连接线条
+                GameObject line = GameObject.Instantiate(Resources.Load&lt;GameObject&gt;(&quot;Prefabs/LineChild&quot;));
+                line.transform.SetParent(Line.transform,false);
+                Lines.Add(line);
+            }
+            for (int i = 0; i &lt;YNames.Length ; i++)
+            {
+                //生成Y轴属性名
+                GameObject Yname = GameObject.Instantiate(Resources.Load&lt;GameObject&gt;(&quot;Prefabs/NameText&quot;));
+                Yname.transform.SetParent(DataPoint.transform.parent.GetChild(0), false);
+                Yname.GetComponent&lt;Text&gt;().text = YNames[i];
+                YLines.Add(Yname);
+                //生成Y轴线
+                GameObject YnameLine = GameObject.Instantiate(Resources.Load&lt;GameObject&gt;(&quot;Prefabs/YNameLineImage&quot;));
+                YnameLine.transform.SetParent(DataPoint.transform.parent.GetChild(1), false);
+                var Y = Yname.GetComponent&lt;RectTransform&gt;().position;
+                YnameLine.GetComponent&lt;RectTransform&gt;().localPosition=new Vector3(0,0,0);
+            }
+            
+        }
+        DataFloat(Value,ValueCount,hight);
+        LineFloat();
+       
+    }
+
+    //设置数据点浮动
+    void DataFloat(float Value, int ValueCount, float hight)
+    {
+        if (Values == null)
+        {
+            Values = new float[ValueCount];
+            for (int i = 0; i &lt; Values.Length; i++)
+            {
+                Values[i] = -DataPointRectTramsform.rect.height / 2;
+            }
+        }
+        float percent = (Convert.ToSingle(Value) / Convert.ToSingle(hight) * DataPointRectTramsform.rect.height) + (-DataPointRectTramsform.rect.height / 2);
+
+        if (Values[0] != k)
+        {
+            for (int i = Values.Length - 1; i &lt; Values.Length; i--)
+            {
+
+                Values[i] = Values[i - 1];
+                if (i == 1)
+                {
+                    Values[0] = percent;
+                    break;
+                }
+            }
+
+            for (int i = 0; i &lt; Values.Length; i++)
+            {
+                DataPoints[i].GetComponent&lt;RectTransform&gt;().DOLocalMoveY(Values[i], 0.5f);
+            }
+        }
+        k = percent;
+    }
+
+    //设置线条浮动
+    void LineFloat()
+    {
+        for (int i = 0; i &lt; ValueCount - 1; i++)
+        {
+            Vector2 pos;
+            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.transform as RectTransform,
+                DataPoints[i].transform.position, canvas.worldCamera, out pos))
+            {
+            }
+
+
+            Vector2 pos1;
+            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.transform as RectTransform,
+                DataPoints[i + 1].transform.position, canvas.worldCamera, out pos1))
+            {
+            }
+
+            var height = pos.y - pos1.y;
+            var widht = pos.x - pos1.x;
+            Lines[i].GetComponent&lt;RectTransform&gt;().sizeDelta = new Vector2(widht, height);
+            var x = (pos.x + pos1.x) / 2;
+            var y = (pos.y + pos1.y) / 2;
+            Lines[i].GetComponent&lt;RectTransform&gt;().localPosition = new Vector3(x, y);
+        }
+    }
+}
+
+</code></pre>
+<p>项目地址<br>
+https://github.com/baishuisr1/-DataSheet</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Unity5.4 利用函数设置副物体跟随主物体旋转]]></title>
+        <id>https://bouvet1.github.io/post/unity54-li-yong-han-shu-she-zhi-fu-wu-ti-gen-sui-zhu-wu-ti-xuan-zhuan</id>
+        <link href="https://bouvet1.github.io/post/unity54-li-yong-han-shu-she-zhi-fu-wu-ti-gen-sui-zhu-wu-ti-xuan-zhuan">
+        </link>
+        <updated>2020-01-02T06:18:12.000Z</updated>
+        <content type="html"><![CDATA[<p>效果(用鼠标控制副物体旋转)：<br>
+<img src="http://upload-images.jianshu.io/upload_images/101711-d568ccdf589f0617.gif?imageMogr2/auto-orient/strip" alt="image" loading="lazy"></p>
+<p>通公式获取圆的下一个坐标位置：<br>
+x = vector3.x + r * cos(angle * PI / 180)<br>
+z = Vector3.z + r * sin(angle * PI /180)<br>
+源代码:</p>
+<pre><code>public class Test : MonoBehaviour
+{
+    private Transform CylinderTranform;
+    private float r;
+    // Use this for initialization
+    void Start()
+    {
+        CylinderTranform = GameObject.Find(&quot;Cylinder&quot;).transform;//获取主物体坐标
+         r = Vector3.Distance(transform.position, CylinderTranform.position);//获取主物体与跟随物体距离，即半径
+    }
+
+    float MouseX;
+    // Update is called once per frame
+    void Update()
+    {
+        transform.LookAt(CylinderTranform);
+        MouseX += Input.GetAxis(&quot;Mouse X&quot;)*5;//获取鼠标位置*5
+        //主物体X+半径*cos(鼠标位置*pi/180)
+        var x = CylinderTranform.position.x + r*Mathf.Cos(-MouseX*Mathf.PI/180);
+        var z = CylinderTranform.position.z + r*Mathf.Sin(-MouseX*Mathf.PI/180);
+        transform.position = new Vector3(x, CylinderTranform.position.y, z);
+    }
+}
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Unity5.4 保存日志记录TXT文件到本地]]></title>
+        <id>https://bouvet1.github.io/post/unity54-bao-cun-ri-zhi-ji-lu-txt-wen-jian-dao-ben-di</id>
+        <link href="https://bouvet1.github.io/post/unity54-bao-cun-ri-zhi-ji-lu-txt-wen-jian-dao-ben-di">
+        </link>
+        <updated>2020-01-02T06:18:03.000Z</updated>
+        <content type="html"><![CDATA[<p>GitHub：https://github.com/baishuisr1/Unity-Save-the-log</p>
+<p>使用方法：<br>
+将Write.cs挂载到GameObject<br>
+在Awake或start中调用Write.console.LogStart();<br>
+输出方法：Write.Log()<br>
+<img src="http://upload-images.jianshu.io/upload_images/101711-c6943ad4f824f2e4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截图.png" loading="lazy"><br>
+输出TXT，默认地址为/StreamingAssets/Log文件夹下（注：文件保存只会在打包后输出，IDE中运行不会保存文件）<br>
+Weite.Log()输出格式:时间-调用类-调用方法-输出内容<br>
+默认输出格式：时间-信息类型-相关代码所在地址-内容<br>
+<img src="http://upload-images.jianshu.io/upload_images/101711-9f815260905d9f18.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截图.png" loading="lazy"></p>
+<p>源代码：</p>
+<pre><code>using System;
+using System.Diagnostics;
+using System.IO;
+using System.Text;
+using UnityEngine;
+using Debug = UnityEngine.Debug;
+
+public class Write : MonoBehaviour
+{
+    private static FileStream FileWriter;
+    private static UTF8Encoding encoding;
+    private static Write _consoleLog;
+    private static bool _AllDisplay;
+    private static bool _LogDisplay;
+    private static bool _WarningDisplay;
+    private static bool _LogData;
+    private static bool IsIDE;
+    private FileInfo fileInfo;
+    private string NowTime;
+
+    public static Write console //开启单例
+    {
+        get
+        {
+            if (_consoleLog == null)
+                _consoleLog = new Write();
+            return _consoleLog;
+        }
+    }
+
+    /// &lt;summary&gt;
+    ///     开始写入日志，参数一：是否写入Warning类型数据，默认不写入，参数二：是否写入Debug.Log类型数据，默认不写入，参数三：是否写入全部数据，默认不写入,参数四：是否将Log方法信息输出到控制台，默认输出
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;WarningDisplay&quot;&gt;&lt;/param&gt;
+    public void LogStart(bool WarningDisplay = false, bool LogDisplay = false, bool AllDisplay = false,
+        bool LogData = true)
+    {
+
+        if ((FileWriter == null))
+        {
+            IsIDE = Application.isEditor; //获取当前场景运行环境
+            _WarningDisplay = WarningDisplay;
+            _LogDisplay = LogDisplay;
+            _AllDisplay = AllDisplay;
+            _LogData = LogData;
+            if (IsIDE == false) //判断当前场景运行环境，如果是Editor中则不执行
+            {
+                Directory.CreateDirectory(Application.dataPath + &quot;/StreamingAssets&quot;);
+                Directory.CreateDirectory(Application.dataPath + &quot;/StreamingAssets/&quot; + &quot;Log&quot;);
+                NowTime = DateTime.Now.ToString().Replace(&quot; &quot;, &quot;_&quot;).Replace(&quot;/&quot;, &quot;_&quot;).Replace(&quot;:&quot;, &quot;_&quot;);
+                fileInfo = new FileInfo(Application.dataPath + &quot;/StreamingAssets/Log/&quot; + NowTime + &quot;_Log.txt&quot;);
+                //设置Log文件输出地址
+                FileWriter = fileInfo.Open(FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
+                encoding = new UTF8Encoding();
+                Application.logMessageReceived += LogCallback;
+            }
+        }
+    }
+
+    /// &lt;summary&gt;
+    ///     替代Debug.log写入Log信息
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;_log&quot;&gt;&lt;/param&gt;
+    /// &lt;param name=&quot;con&quot;&gt;&lt;/param&gt;
+    public static void Log(object _log)
+    {
+        if ((_LogDisplay == false) &amp;&amp; (_AllDisplay == false))
+        {
+            if (_LogData)
+                Debug.Log(_log);
+            if (IsIDE == false)
+            {
+                try
+                {
+                    var trace = new StackTrace(); //获取调用类信息
+                    var ClassName = trace.GetFrame(1).GetMethod().DeclaringType.Name;
+                    var WayName = trace.GetFrame(1).GetMethod().Name;
+                    var log = DateTime.Now + &quot; &quot; + &quot;[&quot; + ClassName + &quot;.&quot; + WayName + &quot;]&quot; + &quot; &quot; + &quot;:&quot; + &quot; &quot; + _log +
+                              Environment.NewLine;
+                    FileWriter.Write(encoding.GetBytes(log), 0, encoding.GetByteCount(log));
+                }
+                catch (Exception)
+                {
+                    Debug.Log(&quot;请检测是否调用了Console.LogStart方法,或者关闭控制台Log写入与所有数据写入项&quot;);
+                }
+
+            }
+        }
+        else
+        {
+            Debug.Log(&quot;请检测是否调用了Console.LogStart方法,或者关闭控制台Log写入与所有数据写入项&quot;);
+        }
+    }
+
+    private void LogCallback(string condition, string stackTrace, LogType type) //写入控制台数据
+    {
+        string content = null;
+        if (_AllDisplay == false)
+        {
+            if (type.ToString() == &quot;Warning&quot;)
+                if (_WarningDisplay == false)
+                {
+                    condition = &quot;&quot;;
+                    stackTrace = &quot;&quot;;
+                    content = &quot;&quot;;
+                }
+                else
+                {
+                    content = DateTime.Now + &quot; &quot; + &quot;[&quot; + type + &quot;]&quot; + &quot;[&quot; + stackTrace + &quot;]&quot; + &quot; &quot; + &quot;:&quot; + &quot; &quot; +
+                              condition +
+                              Environment.NewLine;
+                }
+
+            if (type.ToString() == &quot;Log&quot;)
+                if (_LogDisplay == false)
+                {
+                    condition = &quot;&quot;;
+                    stackTrace = &quot;&quot;;
+                    content = &quot;&quot;;
+                }
+                else
+                {
+                    content = DateTime.Now + &quot; &quot; + &quot;[&quot; + type + &quot;]&quot; + &quot;[&quot; + stackTrace + &quot;]&quot; + &quot; &quot; + &quot;:&quot; + &quot; &quot; +
+                              condition +
+                              Environment.NewLine;
+                }
+            if (type.ToString() == &quot;Exception&quot;)
+                content = DateTime.Now + &quot; &quot; + &quot;[&quot; + type + &quot;]&quot; + &quot;[&quot; + stackTrace + &quot;]&quot; + &quot; &quot; + &quot;:&quot; + &quot; &quot; + condition +
+                          Environment.NewLine;
+        }
+        else
+        {
+            content = DateTime.Now + &quot; &quot; + &quot;[&quot; + type + &quot;]&quot; + &quot;[&quot; + stackTrace + &quot;]&quot; + &quot; &quot; + &quot;:&quot; + &quot; &quot; + condition +
+                      Environment.NewLine;
+        }
+        FileWriter.Write(encoding.GetBytes(content), 0, encoding.GetByteCount(content));
+        FileWriter.Flush();
+    }
+
+    private void OnDestroy() //关闭写入
+    {
+        if ((FileWriter != null) &amp;&amp; (IsIDE == false))
+        {
+            FileWriter.Close();
+            Application.RegisterLogCallback(null);
+        }
+    }
+}
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Unity5.4 通过PHP连接数据库与Socket服务器]]></title>
+        <id>https://bouvet1.github.io/post/unity54-tong-guo-php-lian-jie-shu-ju-ku-yu-socket-fu-wu-qi</id>
+        <link href="https://bouvet1.github.io/post/unity54-tong-guo-php-lian-jie-shu-ju-ku-yu-socket-fu-wu-qi">
+        </link>
+        <updated>2020-01-02T06:17:45.000Z</updated>
+        <content type="html"><![CDATA[<p>公司给一个项目要求程序发布WebGL端同时连接pgSQL与Socket服务器，因为Unity WebGL是无法连接数据库与Socket通讯的，所以就通过PHP作为中间转接层来获取数据，代码如下：</p>
+<p>注：PHP需要搭建环境，推荐Wampserver。</p>
+<p>GitHub:https://github.com/baishuisr1/-Unity-Connect-the-pgSQL-with-the-Socket-server-via-PHP</p>
+<p>演示(由于PHP不支持多线程，所以是间隔时间来获取数据)：<br>
+<img src="http://upload-images.jianshu.io/upload_images/101711-2e46b7591304fadb.gif?imageMogr2/auto-orient/strip" alt="Unity PHP连接服务器.gif" loading="lazy"><br>
+数据库截图：<br>
+<img src="http://upload-images.jianshu.io/upload_images/101711-54709ecce5af4c67.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="%E6%88%AA%E5%.png" loading="lazy"><br>
+服务器代码：</p>
+<pre><code>using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading;
+using System.Xml;
+
+
+namespace ConsoleApp5
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Program program = new Program();
+            program.StartServer();
+            Console.ReadKey();
+        }
+
+        void StartServer() //服务器异步连接
+        {
+            Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            IPAddress ipAddress = IPAddress.Parse(&quot;x.x.x.x&quot;); //设置IP
+            IPEndPoint ipEndPoint = new IPEndPoint(ipAddress,xxxx); //设置IP和端口号
+            socket.Bind(ipEndPoint); //绑定IP和端口号
+            socket.Listen(0); //开始监听客户端
+            socket.BeginAccept(AcceptCallBack, socket); //通过BeginAccept进行异步连接
+            Console.ReadKey();
+        }
+
+        void AcceptCallBack(IAsyncResult ar)
+        {
+            Console.WriteLine(&quot;有一个客户端连接了&quot;);
+            Socket socket = ar.AsyncState as Socket;
+            Socket clientSocket = socket.EndAccept(ar);
+            //向客户端发送一条消息
+            string date = &quot;服务器连接成功&quot;;
+            byte[] msg = System.Text.Encoding.UTF8.GetBytes(date);
+            clientSocket.Send(msg);
+            clientSocket.BeginReceive(dateBuffer, 0, 1024, SocketFlags.None, ReceiveCallBcak, clientSocket);
+            socket.BeginAccept(AcceptCallBack, socket);
+        }
+
+        static byte[] dateBuffer = new byte[1024];
+        private int i=1;
+        void ReceiveCallBcak(IAsyncResult ar) //事件，ar传递值
+        {
+            Socket clientSocket = null;
+            try
+            {
+                clientSocket = ar.AsyncState as Socket;
+                int count = clientSocket.EndReceive(ar);
+                string msg = Encoding.UTF8.GetString(dateBuffer, 0, count);//获取客户端发来数据
+                Console.WriteLine(&quot;客户端发送消息：&quot; + msg);
+                i++;
+                Thread.Sleep(2000);//等待2秒再次发送数据
+                byte[] date = Encoding.UTF8.GetBytes(i.ToString());
+                clientSocket.Send(date);//发送数据
+                Console.WriteLine(&quot;服务器发送数据：&quot; + Encoding.UTF8.GetString(date));
+                clientSocket.BeginReceive(dateBuffer, 0, 1024, SocketFlags.None, ReceiveCallBcak, clientSocket);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine(&quot;客户端断开连接&quot;);
+            }
+        }
+    }
+}
+</code></pre>
+<p>PHP代码：</p>
+<pre><code>&lt;?php
+//连接数据库
+$conn = pg_connect(&quot;host=127.0.0.1 port=5432 dbname=xxxxx user=postgres password=xxxxx&quot;);
+$str = &quot;select * from \&quot;Test\&quot;&quot;;
+$ret = pg_query($conn,$str);
+while($row = pg_fetch_row($ret)){
+    echo $row[0];//输出数据库ID[1]
+    echo $row[1];//输出数据库ID[2]
+}
+//连接SOCKET
+$host = &quot;x.x.x.x&quot;;
+$port= &quot;xxxx&quot;;
+$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+$result=socket_connect($socket,$host,$port);
+    $budder=@socket_read($socket,1024);//接受Scket数据
+    echo $budder;
+    $userid=$_POST['msg'];//获取unity发来数据
+    socket_write($socket,$userid); //将unity数据发送到socket
+    $budder=@socket_read($socket,1024);//重新接受unity数据
+    echo $budder;
+socket_close($socket);
+?&gt;  
+</code></pre>
+<p>Unity 代码:</p>
+<pre><code>using UnityEngine;
+using System.Collections;
+using UnityEngine.UI;
+
+public class NewBehaviourScript : MonoBehaviour
+{
+    public GameObject text;
+    // Use this for initialization
+    void Start()
+    {
+        StartCoroutine(IGetData());
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+
+    IEnumerator IGetData()
+    {
+        while (true)
+        {
+            WWWForm form = new WWWForm();
+            form.AddField(&quot;msg&quot;, &quot;Server&quot;);//设置发送数据
+            WWW www = new WWW(&quot;http://127.0.0.1/index.php&quot;, form);//下载与上传数据
+            yield return www; //等待Web服务器
+            text.GetComponent&lt;Text&gt;().text = www.text;
+            Debug.Log(www.text);
+        }
+
+    }
+}
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[unity5.4 通过计时器方法实现执行时间间隔与延时执行]]></title>
+        <id>https://bouvet1.github.io/post/unity54-tong-guo-ji-shi-qi-fang-fa-shi-xian-zhi-xing-shi-jian-jian-ge-yu-yan-shi-zhi-xing</id>
+        <link href="https://bouvet1.github.io/post/unity54-tong-guo-ji-shi-qi-fang-fa-shi-xian-zhi-xing-shi-jian-jian-ge-yu-yan-shi-zhi-xing">
+        </link>
+        <updated>2020-01-02T06:17:26.000Z</updated>
+        <content type="html"><![CDATA[<p>协程方法实现必须继承MonoBehaviour类，如果写的类不继承MonoBehaviour就无法使用，只能通过计时器来写。不过也有个好处，写成timer类所有需要延迟执行的方法都可以调用。</p>
+<p>代码如下：</p>
+<pre><code>using UnityEngine;
+
+public class Test : MonoBehaviour
+{
+    private bool choose = true;
+    private float timer;
+    public void Timer()
+    {
+        if (choose == false)
+        {
+            timer += Time.deltaTime;//开始计时
+            if (timer &gt; 2)//延迟2S执行
+            {
+                choose = true;
+                timer = 0;
+            }
+        }
+    }
+    void Update ()
+    {   
+        Timer();
+        if (Input.GetKeyDown(KeyCode.Mouse0)&amp;&amp;choose==true)
+        {
+            choose = false;
+            Debug.Log(&quot;run&quot;);
+        }
+    }
+}
+
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Unity 5.4 为模型组一键添加碰撞体(Collider)插件]]></title>
+        <id>https://bouvet1.github.io/post/unity-54-wei-mo-xing-zu-yi-jian-tian-jia-peng-zhuang-ti-collidercha-jian</id>
+        <link href="https://bouvet1.github.io/post/unity-54-wei-mo-xing-zu-yi-jian-tian-jia-peng-zhuang-ti-collidercha-jian">
+        </link>
+        <updated>2020-01-02T06:17:04.000Z</updated>
+        <content type="html"><![CDATA[<p>效果图：<br>
+<img src="http://upload-images.jianshu.io/upload_images/101711-16430da342436f83.gif?imageMogr2/auto-orient/strip" alt="" loading="lazy"></p>
+<p>插件下载地址：<br>
+https://github.com/baishuisr1/Unity-Add-Game-group-Collider-Plugin</p>
+<p>源码:</p>
+<pre><code>using System;
+using UnityEngine;
+using UnityEditor;
+
+public class AddCollider : EditorWindow
+{
+    [MenuItem(&quot;Window/辅助功能&quot;)]
+    static void Window()
+    {
+        AddCollider newWindow = EditorWindow.GetWindow&lt;AddCollider&gt;(&quot;辅助功能&quot;);
+        newWindow.Show();
+    }
+
+
+    private string zoom = &quot;100&quot;;
+
+    void OnGUI()
+    {
+        GUILayout.Label(&quot;碰撞器缩放_百分比(默认100%)&quot;);
+        zoom = GUILayout.TextField(zoom);
+        if (GUILayout.Button(&quot;添加碰撞体积&quot;))
+        {
+            float zoomFloat = Convert.ToSingle(zoom)/100;
+            if (zoomFloat &gt; 1.5)
+            {
+                Debug.Log(&quot;请输入1-150的数&quot;);
+                return;
+            }
+            if (zoomFloat &lt; 0.1)
+            {
+                Debug.Log(&quot;请输入1-150的数&quot;);
+                return;
+            }
+            GameObject gameObject = Selection.activeGameObject;
+            if (gameObject == null)
+            {
+                Debug.Log(&quot;请选择一个物体&quot;);
+                return;
+            }
+
+            Vector3 vector3;
+            vector3 = gameObject.transform.position;
+            gameObject.transform.position =new Vector3(0,0,0);
+
+            float Y_Max = -5000;
+            float Y_Mix = 5000;
+
+            float X_Max = -5000;
+            float X_Mix = 5000;
+
+            float Z_Max = -5000;
+            float Z_Mix = 5000;
+
+            foreach (Transform VARIABLE in gameObject.transform)
+            {
+                BoxCollider boxCollider = VARIABLE.transform.gameObject.AddComponent&lt;BoxCollider&gt;();
+                Vector3[] vector3s = GetBoxColliderVertexPositions(boxCollider);
+                for (int i = 0; i &lt; vector3s.Length; i++)
+                {
+                    if (vector3s[i].y &gt;= Y_Max)
+                    {
+                        Y_Max = vector3s[i].y;
+                    }
+
+                    if (vector3s[i].y &lt;= Y_Mix)
+                    {
+                        Y_Mix = vector3s[i].y;
+                    }
+
+                    if (vector3s[i].x &gt;= X_Max)
+                    {
+                        X_Max = vector3s[i].x;
+                    }
+
+                    if (vector3s[i].x &lt;= X_Mix)
+                    {
+                        X_Mix = vector3s[i].x;
+                    }
+
+                    if (vector3s[i].z &gt;= Z_Max)
+                    {
+                        Z_Max = vector3s[i].z;
+                    }
+
+                    if (vector3s[i].z &lt;= Z_Mix)
+                    {
+                        Z_Mix = vector3s[i].z;
+                    }
+                }
+            }
+
+
+            Y_Max *= zoomFloat;
+            Y_Mix *= zoomFloat;
+
+            X_Max *= zoomFloat;
+            X_Mix *= zoomFloat;
+
+            Z_Max *= zoomFloat;
+            Z_Mix *= zoomFloat;
+
+
+            gameObject.AddComponent&lt;MeshCollider&gt;();
+            Mesh mesh = new Mesh();
+            mesh.name = gameObject.name;
+            int[] triangles = new int[36];
+            Vector3[] vertices = new Vector3[24];
+
+            Vector3 verticeUp1 = new Vector3(X_Mix, Y_Max, Z_Max);
+            vertices[3] = verticeUp1;
+            vertices[9] = verticeUp1;
+            vertices[21] = verticeUp1;
+            Vector3 verticeUp2 = new Vector3(X_Mix, Y_Max, Z_Mix);
+            vertices[5] = verticeUp2;
+            vertices[11] = verticeUp2;
+            vertices[20] = verticeUp2;
+            Vector3 verticeUp3 = new Vector3(X_Max, Y_Max, Z_Mix);
+            vertices[4] = verticeUp3;
+            vertices[10] = verticeUp3;
+            vertices[18] = verticeUp3;
+            Vector3 verticeUp4 = new Vector3(X_Max, Y_Max, Z_Max);
+            vertices[2] = verticeUp4;
+            vertices[8] = verticeUp4;
+            vertices[19] = verticeUp4;
+
+            Vector3 verticeDown1 = new Vector3(X_Max, Y_Mix, Z_Max);
+            vertices[0] = verticeDown1;
+            vertices[14] = verticeDown1;
+            vertices[17] = verticeDown1;
+            Vector3 verticeDown2 = new Vector3(X_Mix, Y_Mix, Z_Max);
+            vertices[1] = verticeDown2;
+            vertices[15] = verticeDown2;
+            vertices[23] = verticeDown2;
+            Vector3 verticeDown3 = new Vector3(X_Mix, Y_Mix, Z_Mix);
+            vertices[7] = verticeDown3;
+            vertices[13] = verticeDown3;
+            vertices[22] = verticeDown3;
+            Vector3 verticeDown4 = new Vector3(X_Max, Y_Mix, Z_Mix);
+            vertices[6] = verticeDown4;
+            vertices[12] = verticeDown4;
+            vertices[16] = verticeDown4;
+
+            int currentCount = 0;
+            for (int i = 0; i &lt; 24; i = i + 4)
+            {
+                //三角形1
+                triangles[currentCount++] = i;
+                triangles[currentCount++] = i + 3;
+                triangles[currentCount++] = i + 1;
+                //三角形2        
+                triangles[currentCount++] = i;
+                triangles[currentCount++] = i + 2;
+                triangles[currentCount++] = i + 3;
+            }
+
+            mesh.vertices = vertices;
+            mesh.triangles = triangles;
+            gameObject.GetComponent&lt;MeshCollider&gt;().sharedMesh = mesh;
+
+            foreach (Transform VARIABLE in gameObject.transform)
+            {
+                DestroyImmediate(VARIABLE.GetComponent&lt;BoxCollider&gt;());
+            }
+            gameObject.transform.position = vector3;
+        }
+    }
+
+    Vector3[] GetBoxColliderVertexPositions(BoxCollider boxcollider)
+    {
+        var vertices = new Vector3[8];
+        
+        vertices[0] =
+            boxcollider.transform.TransformPoint(boxcollider.center +
+                                                 new Vector3(boxcollider.size.x, -boxcollider.size.y, boxcollider.size.z)*
+                                                 0.5f);
+        vertices[1] =
+            boxcollider.transform.TransformPoint(boxcollider.center +
+                                                 new Vector3(-boxcollider.size.x, -boxcollider.size.y,
+                                                     boxcollider.size.z)*0.5f);
+        vertices[2] =
+            boxcollider.transform.TransformPoint(boxcollider.center +
+                                                 new Vector3(-boxcollider.size.x, -boxcollider.size.y,
+                                                     -boxcollider.size.z)*0.5f);
+        vertices[3] =
+            boxcollider.transform.TransformPoint(boxcollider.center +
+                                                 new Vector3(boxcollider.size.x, -boxcollider.size.y,
+                                                     -boxcollider.size.z)*0.5f);
+        
+        vertices[4] =
+            boxcollider.transform.TransformPoint(boxcollider.center +
+                                                 new Vector3(boxcollider.size.x, boxcollider.size.y, boxcollider.size.z)*
+                                                 0.5f);
+        vertices[5] =
+            boxcollider.transform.TransformPoint(boxcollider.center +
+                                                 new Vector3(-boxcollider.size.x, boxcollider.size.y, boxcollider.size.z)*
+                                                 0.5f);
+        vertices[6] =
+            boxcollider.transform.TransformPoint(boxcollider.center +
+                                                 new Vector3(-boxcollider.size.x, boxcollider.size.y,
+                                                     -boxcollider.size.z)*0.5f);
+        vertices[7] =
+            boxcollider.transform.TransformPoint(boxcollider.center +
+                                                 new Vector3(boxcollider.size.x, boxcollider.size.y, -boxcollider.size.z)*
+                                                 0.5f);
+
+        return vertices;
+    }
+}
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Unity5.4 摄像机围绕物体旋转与方向操作]]></title>
+        <id>https://bouvet1.github.io/post/unity54-she-xiang-ji-wei-rao-wu-ti-xuan-zhuan-yu-fang-xiang-cao-zuo</id>
+        <link href="https://bouvet1.github.io/post/unity54-she-xiang-ji-wei-rao-wu-ti-xuan-zhuan-yu-fang-xiang-cao-zuo">
+        </link>
+        <updated>2020-01-02T06:16:29.000Z</updated>
+        <content type="html"><![CDATA[<pre><code>public Transform target;//获取旋转目标
+
+private void camerarotate() //摄像机围绕目标旋转操作
+    {
+        transform.RotateAround(target.position, Vector3.up, speed*Time.deltaTime); //摄像机围绕目标旋转
+        var mouse_x = Input.GetAxis(&quot;Mouse X&quot;);//获取鼠标X轴移动
+        var mouse_y = -Input.GetAxis(&quot;Mouse Y&quot;);//获取鼠标Y轴移动
+        if (Input.GetKey(KeyCode.Mouse1))
+        {
+            transform.Translate(Vector3.left*(mouse_x*15f)*Time.deltaTime);
+            transform.Translate(Vector3.up*(mouse_y*15f)*Time.deltaTime);
+        }
+        if (Input.GetKey(KeyCode.Mouse0))
+        {
+            transform.RotateAround(target.transform.position, Vector3.up, mouse_x*5);
+            transform.RotateAround(target.transform.position, transform.right, mouse_y*5);
+        }
+    }
+
+    private void camerazoom() //摄像机滚轮缩放
+    {
+        if (Input.GetAxis(&quot;Mouse ScrollWheel&quot;) &gt; 0)
+            transform.Translate(Vector3.forward*0.5f);
+
+
+        if (Input.GetAxis(&quot;Mouse ScrollWheel&quot;) &lt; 0)
+            transform.Translate(Vector3.forward*-0.5f);
+    }
+</code></pre>
+]]></content>
+    </entry>
 </feed>

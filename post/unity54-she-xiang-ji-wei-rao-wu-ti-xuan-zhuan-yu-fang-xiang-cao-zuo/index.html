@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>关于 | Bouvet</title>
+<title>Unity5.4 摄像机围绕物体旋转与方向操作 | Bouvet</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
@@ -18,14 +18,11 @@
 
 
 
-    <meta name="description" content="
-欢迎来到我的小站呀，很高兴遇见你！🤝
+    <meta name="description" content="public Transform target;//获取旋转目标
 
-🏠 关于本站
-👨‍💻 博主是谁
-⛹ 兴趣爱好
-📬 联系我呀
-..." />
+private void camerarotate() //摄像机围绕目标旋转操作
+    {
+        transform.RotateAround(target...." />
     <meta name="keywords" content="" />
   </head>
   <body>
@@ -103,20 +100,51 @@
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
           <div class="post-detail">
-            <h2 class="post-title">关于</h2>
-            <div class="post-date">2019-01-25</div>
+            <h2 class="post-title">Unity5.4 摄像机围绕物体旋转与方向操作</h2>
+            <div class="post-date">2020-01-02</div>
             
             <div class="post-content" v-pre>
-              <blockquote>
-<p>欢迎来到我的小站呀，很高兴遇见你！🤝</p>
-</blockquote>
-<h2 id="关于本站">🏠 关于本站</h2>
-<h2 id="博主是谁">👨‍💻 博主是谁</h2>
-<h2 id="兴趣爱好">⛹ 兴趣爱好</h2>
-<h2 id="联系我呀">📬 联系我呀</h2>
+              <pre><code>public Transform target;//获取旋转目标
+
+private void camerarotate() //摄像机围绕目标旋转操作
+    {
+        transform.RotateAround(target.position, Vector3.up, speed*Time.deltaTime); //摄像机围绕目标旋转
+        var mouse_x = Input.GetAxis(&quot;Mouse X&quot;);//获取鼠标X轴移动
+        var mouse_y = -Input.GetAxis(&quot;Mouse Y&quot;);//获取鼠标Y轴移动
+        if (Input.GetKey(KeyCode.Mouse1))
+        {
+            transform.Translate(Vector3.left*(mouse_x*15f)*Time.deltaTime);
+            transform.Translate(Vector3.up*(mouse_y*15f)*Time.deltaTime);
+        }
+        if (Input.GetKey(KeyCode.Mouse0))
+        {
+            transform.RotateAround(target.transform.position, Vector3.up, mouse_x*5);
+            transform.RotateAround(target.transform.position, transform.right, mouse_y*5);
+        }
+    }
+
+    private void camerazoom() //摄像机滚轮缩放
+    {
+        if (Input.GetAxis(&quot;Mouse ScrollWheel&quot;) &gt; 0)
+            transform.Translate(Vector3.forward*0.5f);
+
+
+        if (Input.GetAxis(&quot;Mouse ScrollWheel&quot;) &lt; 0)
+            transform.Translate(Vector3.forward*-0.5f);
+    }
+</code></pre>
 
             </div>
             
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://bouvet1.github.io/post/doc">
+                  <h3 class="post-title">
+                    doc
+                  </h3>
+                </a>
+              </div>
             
 
             

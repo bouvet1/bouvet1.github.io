@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Unity5.4 UGUI制作实时数据线性图表 | Bouvet</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://bouvet1.github.io/favicon.ico?v=1577945956234">
+<link rel="stylesheet" href="https://bouvet1.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="效果预览：
+
+使用方法：
+//开始执行:浮动值，浮动值范围，X轴属性，Y轴属性,浮动线粗细
+DataSheet.DataSheet1.Setup(Value,100,X,Y,5);
+
+源代码
+using System;
+using Unit..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://bouvet1.github.io">
+        <img src="https://bouvet1.github.io/images/avatar.png?v=1577945956234" class="site-logo">
+        <h1 class="site-title">Bouvet</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="https://bouvet1.github.io/post/doc" class="site-nav" target="_blank">
+            文档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      至繁归于至简
+    </div>
+    <div class="site-footer">
+       | <a class="rss" href="https://bouvet1.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Unity5.4 UGUI制作实时数据线性图表</h2>
+            <div class="post-date">2020-01-02</div>
+            
+            <div class="post-content" v-pre>
+              <p>效果预览：<br>
+<img src="http://upload-images.jianshu.io/upload_images/101711-9badfc5da37b04de.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="1.gif" loading="lazy"></p>
+<p>使用方法：</p>
+<pre><code>//开始执行:浮动值，浮动值范围，X轴属性，Y轴属性,浮动线粗细
+DataSheet.DataSheet1.Setup(Value,100,X,Y,5);
+</code></pre>
+<p>源代码</p>
+<pre><code>using System;
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using DG.Tweening;
+using UnityEngine.UI;
+
+public class DataSheet
+{
+    private static DataSheet dataSheet;
+
+    public static DataSheet DataSheet1
+    {
+        get
+        {
+            if (dataSheet==null)
+            {
+                dataSheet=new DataSheet();
+            }
+            return dataSheet;
+        }
+    }
+
+    private Canvas canvas;
+    public int Quantity = 5;
+    private GameObject Line;
+    private GameObject DataPoint;
+    private RectTransform DataPointRectTramsform;
+    public  float LineThickness;
+    DataSheet()
+    {
+        canvas = GameObject.Find(&quot;Canvas&quot;).GetComponent&lt;Canvas&gt;();
+        Line = GameObject.Find(&quot;Line&quot;);
+        DataPoint = GameObject.Find(&quot;DataPoint&quot;);
+        DataPointRectTramsform = DataPoint.GetComponent&lt;RectTransform&gt;();
+    }
+
+    private float[] Values;
+    private List&lt;GameObject&gt; DataPoints;
+    private List&lt;GameObject&gt; Lines;
+    private List&lt;GameObject&gt; YLines=new List&lt;GameObject&gt;();
+    private float k;
+    private int ValueCount;
+    /// &lt;summary&gt;
+    /// 开始执行:浮动值，浮动值范围，X轴属性，Y轴属性,浮动线粗细
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;Value&quot;&gt;&lt;/param&gt;
+    /// &lt;param name=&quot;hight&quot;&gt;&lt;/param&gt;
+    /// &lt;param name=&quot;XNames&quot;&gt;&lt;/param&gt;
+    /// &lt;param name=&quot;YName&quot;&gt;&lt;/param&gt;
+    public void Setup(float Value,float hight,string[] XNames,string[] YNames,float LineThickness)
+    {
+        //生成数据点与线条
+        if (DataPoints == null)
+        {
+            this.LineThickness = LineThickness;
+            ValueCount =XNames.Length;
+            //生成数据点
+            Lines=new List&lt;GameObject&gt;();
+            DataPoints = new List&lt;GameObject&gt;();
+            var GoX = DataPointRectTramsform.rect.width / ValueCount;
+            var GoXStart = 0-(DataPointRectTramsform.rect.width / 2);
+            for (int i = 0; i &lt; ValueCount; i++)
+            {
+                GameObject Go = GameObject.Instantiate(Resources.Load&lt;GameObject&gt;(&quot;Prefabs/DataPoint&quot;));
+                Go.transform.SetParent(DataPoint.transform, false);
+                DataPoints.Add(Go);
+                Go.GetComponent&lt;RectTransform&gt;().localPosition = new Vector3(GoXStart+(GoX*(i+1)-GoX/2),-DataPointRectTramsform.rect.height/2);
+
+                //生成X轴属性名
+                GameObject Xname = GameObject.Instantiate(Resources.Load&lt;GameObject&gt;(&quot;Prefabs/NameText&quot;));
+                Xname.transform.SetParent(DataPoint.transform.parent.GetChild(2), false);
+                Xname.GetComponent&lt;Text&gt;().text = XNames[i];
+
+                if (i == ValueCount-1) { break; }
+                //生成连接线条
+                GameObject line = GameObject.Instantiate(Resources.Load&lt;GameObject&gt;(&quot;Prefabs/LineChild&quot;));
+                line.transform.SetParent(Line.transform,false);
+                Lines.Add(line);
+            }
+            for (int i = 0; i &lt;YNames.Length ; i++)
+            {
+                //生成Y轴属性名
+                GameObject Yname = GameObject.Instantiate(Resources.Load&lt;GameObject&gt;(&quot;Prefabs/NameText&quot;));
+                Yname.transform.SetParent(DataPoint.transform.parent.GetChild(0), false);
+                Yname.GetComponent&lt;Text&gt;().text = YNames[i];
+                YLines.Add(Yname);
+                //生成Y轴线
+                GameObject YnameLine = GameObject.Instantiate(Resources.Load&lt;GameObject&gt;(&quot;Prefabs/YNameLineImage&quot;));
+                YnameLine.transform.SetParent(DataPoint.transform.parent.GetChild(1), false);
+                var Y = Yname.GetComponent&lt;RectTransform&gt;().position;
+                YnameLine.GetComponent&lt;RectTransform&gt;().localPosition=new Vector3(0,0,0);
+            }
+            
+        }
+        DataFloat(Value,ValueCount,hight);
+        LineFloat();
+       
+    }
+
+    //设置数据点浮动
+    void DataFloat(float Value, int ValueCount, float hight)
+    {
+        if (Values == null)
+        {
+            Values = new float[ValueCount];
+            for (int i = 0; i &lt; Values.Length; i++)
+            {
+                Values[i] = -DataPointRectTramsform.rect.height / 2;
+            }
+        }
+        float percent = (Convert.ToSingle(Value) / Convert.ToSingle(hight) * DataPointRectTramsform.rect.height) + (-DataPointRectTramsform.rect.height / 2);
+
+        if (Values[0] != k)
+        {
+            for (int i = Values.Length - 1; i &lt; Values.Length; i--)
+            {
+
+                Values[i] = Values[i - 1];
+                if (i == 1)
+                {
+                    Values[0] = percent;
+                    break;
+                }
+            }
+
+            for (int i = 0; i &lt; Values.Length; i++)
+            {
+                DataPoints[i].GetComponent&lt;RectTransform&gt;().DOLocalMoveY(Values[i], 0.5f);
+            }
+        }
+        k = percent;
+    }
+
+    //设置线条浮动
+    void LineFloat()
+    {
+        for (int i = 0; i &lt; ValueCount - 1; i++)
+        {
+            Vector2 pos;
+            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.transform as RectTransform,
+                DataPoints[i].transform.position, canvas.worldCamera, out pos))
+            {
+            }
+
+
+            Vector2 pos1;
+            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.transform as RectTransform,
+                DataPoints[i + 1].transform.position, canvas.worldCamera, out pos1))
+            {
+            }
+
+            var height = pos.y - pos1.y;
+            var widht = pos.x - pos1.x;
+            Lines[i].GetComponent&lt;RectTransform&gt;().sizeDelta = new Vector2(widht, height);
+            var x = (pos.x + pos1.x) / 2;
+            var y = (pos.y + pos1.y) / 2;
+            Lines[i].GetComponent&lt;RectTransform&gt;().localPosition = new Vector3(x, y);
+        }
+    }
+}
+
+</code></pre>
+<p>项目地址<br>
+https://github.com/baishuisr1/-DataSheet</p>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://bouvet1.github.io/post/unity54-li-yong-han-shu-she-zhi-fu-wu-ti-gen-sui-zhu-wu-ti-xuan-zhuan">
+                  <h3 class="post-title">
+                    Unity5.4 利用函数设置副物体跟随主物体旋转
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>

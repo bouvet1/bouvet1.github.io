@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Unity5.4 通过PHP连接数据库与Socket服务器 | Bouvet</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://bouvet1.github.io/favicon.ico?v=1577945956234">
+<link rel="stylesheet" href="https://bouvet1.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="公司给一个项目要求程序发布WebGL端同时连接pgSQL与Socket服务器，因为Unity WebGL是无法连接数据库与Socket通讯的，所以就通过PHP作为中间转接层来获取数据，代码如下：
+注：PHP需要搭建环境，推荐Wampserv..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://bouvet1.github.io">
+        <img src="https://bouvet1.github.io/images/avatar.png?v=1577945956234" class="site-logo">
+        <h1 class="site-title">Bouvet</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="https://bouvet1.github.io/post/doc" class="site-nav" target="_blank">
+            文档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      至繁归于至简
+    </div>
+    <div class="site-footer">
+       | <a class="rss" href="https://bouvet1.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Unity5.4 通过PHP连接数据库与Socket服务器</h2>
+            <div class="post-date">2020-01-02</div>
+            
+            <div class="post-content" v-pre>
+              <p>公司给一个项目要求程序发布WebGL端同时连接pgSQL与Socket服务器，因为Unity WebGL是无法连接数据库与Socket通讯的，所以就通过PHP作为中间转接层来获取数据，代码如下：</p>
+<p>注：PHP需要搭建环境，推荐Wampserver。</p>
+<p>GitHub:https://github.com/baishuisr1/-Unity-Connect-the-pgSQL-with-the-Socket-server-via-PHP</p>
+<p>演示(由于PHP不支持多线程，所以是间隔时间来获取数据)：<br>
+<img src="http://upload-images.jianshu.io/upload_images/101711-2e46b7591304fadb.gif?imageMogr2/auto-orient/strip" alt="Unity PHP连接服务器.gif" loading="lazy"><br>
+数据库截图：<br>
+<img src="http://upload-images.jianshu.io/upload_images/101711-54709ecce5af4c67.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="%E6%88%AA%E5%.png" loading="lazy"><br>
+服务器代码：</p>
+<pre><code>using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading;
+using System.Xml;
+
+
+namespace ConsoleApp5
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Program program = new Program();
+            program.StartServer();
+            Console.ReadKey();
+        }
+
+        void StartServer() //服务器异步连接
+        {
+            Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            IPAddress ipAddress = IPAddress.Parse(&quot;x.x.x.x&quot;); //设置IP
+            IPEndPoint ipEndPoint = new IPEndPoint(ipAddress,xxxx); //设置IP和端口号
+            socket.Bind(ipEndPoint); //绑定IP和端口号
+            socket.Listen(0); //开始监听客户端
+            socket.BeginAccept(AcceptCallBack, socket); //通过BeginAccept进行异步连接
+            Console.ReadKey();
+        }
+
+        void AcceptCallBack(IAsyncResult ar)
+        {
+            Console.WriteLine(&quot;有一个客户端连接了&quot;);
+            Socket socket = ar.AsyncState as Socket;
+            Socket clientSocket = socket.EndAccept(ar);
+            //向客户端发送一条消息
+            string date = &quot;服务器连接成功&quot;;
+            byte[] msg = System.Text.Encoding.UTF8.GetBytes(date);
+            clientSocket.Send(msg);
+            clientSocket.BeginReceive(dateBuffer, 0, 1024, SocketFlags.None, ReceiveCallBcak, clientSocket);
+            socket.BeginAccept(AcceptCallBack, socket);
+        }
+
+        static byte[] dateBuffer = new byte[1024];
+        private int i=1;
+        void ReceiveCallBcak(IAsyncResult ar) //事件，ar传递值
+        {
+            Socket clientSocket = null;
+            try
+            {
+                clientSocket = ar.AsyncState as Socket;
+                int count = clientSocket.EndReceive(ar);
+                string msg = Encoding.UTF8.GetString(dateBuffer, 0, count);//获取客户端发来数据
+                Console.WriteLine(&quot;客户端发送消息：&quot; + msg);
+                i++;
+                Thread.Sleep(2000);//等待2秒再次发送数据
+                byte[] date = Encoding.UTF8.GetBytes(i.ToString());
+                clientSocket.Send(date);//发送数据
+                Console.WriteLine(&quot;服务器发送数据：&quot; + Encoding.UTF8.GetString(date));
+                clientSocket.BeginReceive(dateBuffer, 0, 1024, SocketFlags.None, ReceiveCallBcak, clientSocket);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine(&quot;客户端断开连接&quot;);
+            }
+        }
+    }
+}
+</code></pre>
+<p>PHP代码：</p>
+<pre><code>&lt;?php
+//连接数据库
+$conn = pg_connect(&quot;host=127.0.0.1 port=5432 dbname=xxxxx user=postgres password=xxxxx&quot;);
+$str = &quot;select * from \&quot;Test\&quot;&quot;;
+$ret = pg_query($conn,$str);
+while($row = pg_fetch_row($ret)){
+    echo $row[0];//输出数据库ID[1]
+    echo $row[1];//输出数据库ID[2]
+}
+//连接SOCKET
+$host = &quot;x.x.x.x&quot;;
+$port= &quot;xxxx&quot;;
+$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+$result=socket_connect($socket,$host,$port);
+    $budder=@socket_read($socket,1024);//接受Scket数据
+    echo $budder;
+    $userid=$_POST['msg'];//获取unity发来数据
+    socket_write($socket,$userid); //将unity数据发送到socket
+    $budder=@socket_read($socket,1024);//重新接受unity数据
+    echo $budder;
+socket_close($socket);
+?&gt;  
+</code></pre>
+<p>Unity 代码:</p>
+<pre><code>using UnityEngine;
+using System.Collections;
+using UnityEngine.UI;
+
+public class NewBehaviourScript : MonoBehaviour
+{
+    public GameObject text;
+    // Use this for initialization
+    void Start()
+    {
+        StartCoroutine(IGetData());
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+
+    IEnumerator IGetData()
+    {
+        while (true)
+        {
+            WWWForm form = new WWWForm();
+            form.AddField(&quot;msg&quot;, &quot;Server&quot;);//设置发送数据
+            WWW www = new WWW(&quot;http://127.0.0.1/index.php&quot;, form);//下载与上传数据
+            yield return www; //等待Web服务器
+            text.GetComponent&lt;Text&gt;().text = www.text;
+            Debug.Log(www.text);
+        }
+
+    }
+}
+</code></pre>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://bouvet1.github.io/post/unity54-tong-guo-ji-shi-qi-fang-fa-shi-xian-zhi-xing-shi-jian-jian-ge-yu-yan-shi-zhi-xing">
+                  <h3 class="post-title">
+                    unity5.4 通过计时器方法实现执行时间间隔与延时执行
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>

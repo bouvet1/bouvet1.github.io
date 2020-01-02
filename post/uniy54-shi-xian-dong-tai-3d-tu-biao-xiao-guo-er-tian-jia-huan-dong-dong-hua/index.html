@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>关于 | Bouvet</title>
+<title>Uniy5.4 实现动态3D图表效果(二)：添加缓动动画 | Bouvet</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
@@ -18,14 +18,12 @@
 
 
 
-    <meta name="description" content="
-欢迎来到我的小站呀，很高兴遇见你！🤝
-
-🏠 关于本站
-👨‍💻 博主是谁
-⛹ 兴趣爱好
-📬 联系我呀
-..." />
+    <meta name="description" content="效果图(gif)：
+代码(需要插件DOTween)：
+using UnityEngine;
+using System.Collections;
+using DG.Tweening;
+using UnityEngine.EventSystem..." />
     <meta name="keywords" content="" />
   </head>
   <body>
@@ -103,20 +101,61 @@
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
           <div class="post-detail">
-            <h2 class="post-title">关于</h2>
-            <div class="post-date">2019-01-25</div>
+            <h2 class="post-title">Uniy5.4 实现动态3D图表效果(二)：添加缓动动画</h2>
+            <div class="post-date">2020-01-02</div>
             
             <div class="post-content" v-pre>
-              <blockquote>
-<p>欢迎来到我的小站呀，很高兴遇见你！🤝</p>
-</blockquote>
-<h2 id="关于本站">🏠 关于本站</h2>
-<h2 id="博主是谁">👨‍💻 博主是谁</h2>
-<h2 id="兴趣爱好">⛹ 兴趣爱好</h2>
-<h2 id="联系我呀">📬 联系我呀</h2>
+              <p>效果图(gif)：<img src="http://upload-images.jianshu.io/upload_images/101711-e345d2c0d644131b.gif?imageMogr2/auto-orient/strip" alt="" loading="lazy"></p>
+<p>代码(需要插件DOTween)：</p>
+<pre><code>using UnityEngine;
+using System.Collections;
+using DG.Tweening;
+using UnityEngine.EventSystems;
+
+public class Data : MonoBehaviour
+{
+    public int Time=5;
+    private Vector3 vertice;//作为中间传值的顶点vector
+    public  Vector3[] vertices;
+    private Mesh mesh;
+    [Range(0, 10)]
+    public float value = 10;//设置高度值
+    void Start()
+    {
+        vertices = GetComponent&lt;MeshFilter&gt;().mesh.vertices;//获取Gameobject meshfilter组件
+        mesh = GetComponent&lt;MeshFilter&gt;().mesh;//获取meshfilter组件中mesh数组数据
+    }
+
+    void Update()
+    {
+        for (int i = 0; i &lt; vertices.Length; i++)//遍历数组
+        {
+
+            if (vertices[i].y &gt;= 0f)//判断mesh是否为顶部
+            {
+                vertice.x = vertices[i].x;
+                vertice.z = vertices[i].z;
+                DOTween.To(() =&gt; vertice, x =&gt; vertice = x, new Vector3(vertice.x, value, vertice.y), Time);//通过DoTween设置vertice值
+                vertices[i]= vertice; //将vertice值传递给vertices[i]
+            }
+        }
+        mesh.vertices = vertices;//刷新
+    }
+}
+</code></pre>
+<p>项目地址：https://github.com/baishuisr1/Unity-3D-Chart</p>
 
             </div>
             
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://bouvet1.github.io/post/uniy54-shi-xian-dong-tai-3d-tu-biao-xiao-guo-yi">
+                  <h3 class="post-title">
+                    Uniy5.4 实现动态3D图表效果(一)
+                  </h3>
+                </a>
+              </div>
             
 
             
