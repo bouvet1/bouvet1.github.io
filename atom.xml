@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://bouvet1.github.io</id>
     <title>Bouvet</title>
-    <updated>2020-01-02T06:20:01.573Z</updated>
+    <updated>2020-01-02T06:33:11.606Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://bouvet1.github.io"/>
     <link rel="self" href="https://bouvet1.github.io/atom.xml"/>
@@ -11,103 +11,11 @@
     <icon>https://bouvet1.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Bouvet</rights>
     <entry>
-        <title type="html"><![CDATA[Uniy5.4 实现动态3D图表效果(二)：添加缓动动画]]></title>
-        <id>https://bouvet1.github.io/post/uniy54-shi-xian-dong-tai-3d-tu-biao-xiao-guo-er-tian-jia-huan-dong-dong-hua</id>
-        <link href="https://bouvet1.github.io/post/uniy54-shi-xian-dong-tai-3d-tu-biao-xiao-guo-er-tian-jia-huan-dong-dong-hua">
-        </link>
-        <updated>2020-01-02T06:19:08.000Z</updated>
-        <content type="html"><![CDATA[<p>效果图(gif)：<img src="http://upload-images.jianshu.io/upload_images/101711-e345d2c0d644131b.gif?imageMogr2/auto-orient/strip" alt="" loading="lazy"></p>
-<p>代码(需要插件DOTween)：</p>
-<pre><code>using UnityEngine;
-using System.Collections;
-using DG.Tweening;
-using UnityEngine.EventSystems;
-
-public class Data : MonoBehaviour
-{
-    public int Time=5;
-    private Vector3 vertice;//作为中间传值的顶点vector
-    public  Vector3[] vertices;
-    private Mesh mesh;
-    [Range(0, 10)]
-    public float value = 10;//设置高度值
-    void Start()
-    {
-        vertices = GetComponent&lt;MeshFilter&gt;().mesh.vertices;//获取Gameobject meshfilter组件
-        mesh = GetComponent&lt;MeshFilter&gt;().mesh;//获取meshfilter组件中mesh数组数据
-    }
-
-    void Update()
-    {
-        for (int i = 0; i &lt; vertices.Length; i++)//遍历数组
-        {
-
-            if (vertices[i].y &gt;= 0f)//判断mesh是否为顶部
-            {
-                vertice.x = vertices[i].x;
-                vertice.z = vertices[i].z;
-                DOTween.To(() =&gt; vertice, x =&gt; vertice = x, new Vector3(vertice.x, value, vertice.y), Time);//通过DoTween设置vertice值
-                vertices[i]= vertice; //将vertice值传递给vertices[i]
-            }
-        }
-        mesh.vertices = vertices;//刷新
-    }
-}
-</code></pre>
-<p>项目地址：https://github.com/baishuisr1/Unity-3D-Chart</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Uniy5.4 实现动态3D图表效果(一)]]></title>
-        <id>https://bouvet1.github.io/post/uniy54-shi-xian-dong-tai-3d-tu-biao-xiao-guo-yi</id>
-        <link href="https://bouvet1.github.io/post/uniy54-shi-xian-dong-tai-3d-tu-biao-xiao-guo-yi">
-        </link>
-        <updated>2020-01-02T06:19:00.000Z</updated>
-        <content type="html"><![CDATA[<p>原本想使用插件来做，奈何囊中羞涩，只能自己写了。通过Value值修改高度。效果图：<br>
-<img src="http://upload-images.jianshu.io/upload_images/101711-55674da7f3c5586a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image" loading="lazy"><br>
-代码：</p>
-<pre><code>using UnityEngine;
-using System.Collections;
-using UnityEngine;
-using System.Collections;
-
-public class cube : MonoBehaviour
-{
-    private Vector3[] vertices;
-    private Mesh mesh;
-    [Range(0, 10)]
-    public float value = 1;//设置高度值
-    // Use this for initialization
-    void Start()
-    {
-        vertices = GetComponent&lt;MeshFilter&gt;().mesh.vertices;//获取Gameobject meshfilter组件
-        mesh = GetComponent&lt;MeshFilter&gt;().mesh;//获取meshfilter组件中mesh数组数据
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        for (int i = 0; i &lt; vertices.Length; i++)//遍历数组
-        {
-
-            if (vertices[i].y &gt;= 0f)//判断mesh是否为顶部
-            {
-                vertices[i].y = value;//设置mesh顶部高度等于高度值
-            }
-        }
-        mesh.vertices = vertices;//刷新
-    }
-}
-</code></pre>
-<p>项目地址：https://github.com/baishuisr1/Unity-3D-Chart</p>
-]]></content>
-    </entry>
-    <entry>
         <title type="html"><![CDATA[Unity对象池封装]]></title>
         <id>https://bouvet1.github.io/post/unity-dui-xiang-chi-feng-zhuang</id>
         <link href="https://bouvet1.github.io/post/unity-dui-xiang-chi-feng-zhuang">
         </link>
-        <updated>2020-01-02T06:18:36.000Z</updated>
+        <updated>2018-04-24T06:18:36.000Z</updated>
         <content type="html"><![CDATA[<p>一共分为两个类，SubPool与ObjectPool，SubPool类为总对象池包含ObjectPool的子池子，ObjectPool包含需要入池的对象。</p>
 <p>调用方法：</p>
 <ul>
@@ -284,7 +192,7 @@ public class ObjectPool:Manager&lt;ObjectPool&gt;
         <id>https://bouvet1.github.io/post/unity54-ugui-zhi-zuo-shi-shi-shu-ju-xian-xing-tu-biao</id>
         <link href="https://bouvet1.github.io/post/unity54-ugui-zhi-zuo-shi-shi-shu-ju-xian-xing-tu-biao">
         </link>
-        <updated>2020-01-02T06:18:22.000Z</updated>
+        <updated>2017-12-13T06:18:22.000Z</updated>
         <content type="html"><![CDATA[<p>效果预览：<br>
 <img src="http://upload-images.jianshu.io/upload_images/101711-9badfc5da37b04de.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="1.gif" loading="lazy"></p>
 <p>使用方法：</p>
@@ -464,7 +372,7 @@ https://github.com/baishuisr1/-DataSheet</p>
         <id>https://bouvet1.github.io/post/unity54-li-yong-han-shu-she-zhi-fu-wu-ti-gen-sui-zhu-wu-ti-xuan-zhuan</id>
         <link href="https://bouvet1.github.io/post/unity54-li-yong-han-shu-she-zhi-fu-wu-ti-gen-sui-zhu-wu-ti-xuan-zhuan">
         </link>
-        <updated>2020-01-02T06:18:12.000Z</updated>
+        <updated>2017-12-13T06:18:12.000Z</updated>
         <content type="html"><![CDATA[<p>效果(用鼠标控制副物体旋转)：<br>
 <img src="http://upload-images.jianshu.io/upload_images/101711-d568ccdf589f0617.gif?imageMogr2/auto-orient/strip" alt="image" loading="lazy"></p>
 <p>通公式获取圆的下一个坐标位置：<br>
@@ -502,7 +410,7 @@ z = Vector3.z + r * sin(angle * PI /180)<br>
         <id>https://bouvet1.github.io/post/unity54-bao-cun-ri-zhi-ji-lu-txt-wen-jian-dao-ben-di</id>
         <link href="https://bouvet1.github.io/post/unity54-bao-cun-ri-zhi-ji-lu-txt-wen-jian-dao-ben-di">
         </link>
-        <updated>2020-01-02T06:18:03.000Z</updated>
+        <updated>2017-11-08T06:18:03.000Z</updated>
         <content type="html"><![CDATA[<p>GitHub：https://github.com/baishuisr1/Unity-Save-the-log</p>
 <p>使用方法：<br>
 将Write.cs挂载到GameObject<br>
@@ -670,7 +578,7 @@ public class Write : MonoBehaviour
         <id>https://bouvet1.github.io/post/unity54-tong-guo-php-lian-jie-shu-ju-ku-yu-socket-fu-wu-qi</id>
         <link href="https://bouvet1.github.io/post/unity54-tong-guo-php-lian-jie-shu-ju-ku-yu-socket-fu-wu-qi">
         </link>
-        <updated>2020-01-02T06:17:45.000Z</updated>
+        <updated>2017-10-20T06:17:45.000Z</updated>
         <content type="html"><![CDATA[<p>公司给一个项目要求程序发布WebGL端同时连接pgSQL与Socket服务器，因为Unity WebGL是无法连接数据库与Socket通讯的，所以就通过PHP作为中间转接层来获取数据，代码如下：</p>
 <p>注：PHP需要搭建环境，推荐Wampserver。</p>
 <p>GitHub:https://github.com/baishuisr1/-Unity-Connect-the-pgSQL-with-the-Socket-server-via-PHP</p>
@@ -815,7 +723,7 @@ public class NewBehaviourScript : MonoBehaviour
         <id>https://bouvet1.github.io/post/unity54-tong-guo-ji-shi-qi-fang-fa-shi-xian-zhi-xing-shi-jian-jian-ge-yu-yan-shi-zhi-xing</id>
         <link href="https://bouvet1.github.io/post/unity54-tong-guo-ji-shi-qi-fang-fa-shi-xian-zhi-xing-shi-jian-jian-ge-yu-yan-shi-zhi-xing">
         </link>
-        <updated>2020-01-02T06:17:26.000Z</updated>
+        <updated>2017-09-19T06:17:26.000Z</updated>
         <content type="html"><![CDATA[<p>协程方法实现必须继承MonoBehaviour类，如果写的类不继承MonoBehaviour就无法使用，只能通过计时器来写。不过也有个好处，写成timer类所有需要延迟执行的方法都可以调用。</p>
 <p>代码如下：</p>
 <pre><code>using UnityEngine;
@@ -851,11 +759,56 @@ public class Test : MonoBehaviour
 ]]></content>
     </entry>
     <entry>
+        <title type="html"><![CDATA[Uniy5.4 实现动态3D图表效果(一)]]></title>
+        <id>https://bouvet1.github.io/post/uniy54-shi-xian-dong-tai-3d-tu-biao-xiao-guo-yi</id>
+        <link href="https://bouvet1.github.io/post/uniy54-shi-xian-dong-tai-3d-tu-biao-xiao-guo-yi">
+        </link>
+        <updated>2017-08-18T06:19:00.000Z</updated>
+        <content type="html"><![CDATA[<p>原本想使用插件来做，奈何囊中羞涩，只能自己写了。通过Value值修改高度。效果图：<br>
+<img src="http://upload-images.jianshu.io/upload_images/101711-55674da7f3c5586a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image" loading="lazy"><br>
+代码：</p>
+<pre><code>using UnityEngine;
+using System.Collections;
+using UnityEngine;
+using System.Collections;
+
+public class cube : MonoBehaviour
+{
+    private Vector3[] vertices;
+    private Mesh mesh;
+    [Range(0, 10)]
+    public float value = 1;//设置高度值
+    // Use this for initialization
+    void Start()
+    {
+        vertices = GetComponent&lt;MeshFilter&gt;().mesh.vertices;//获取Gameobject meshfilter组件
+        mesh = GetComponent&lt;MeshFilter&gt;().mesh;//获取meshfilter组件中mesh数组数据
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        for (int i = 0; i &lt; vertices.Length; i++)//遍历数组
+        {
+
+            if (vertices[i].y &gt;= 0f)//判断mesh是否为顶部
+            {
+                vertices[i].y = value;//设置mesh顶部高度等于高度值
+            }
+        }
+        mesh.vertices = vertices;//刷新
+    }
+}
+</code></pre>
+<p>项目地址：https://github.com/baishuisr1/Unity-3D-Chart</p>
+]]></content>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[Unity 5.4 为模型组一键添加碰撞体(Collider)插件]]></title>
         <id>https://bouvet1.github.io/post/unity-54-wei-mo-xing-zu-yi-jian-tian-jia-peng-zhuang-ti-collidercha-jian</id>
         <link href="https://bouvet1.github.io/post/unity-54-wei-mo-xing-zu-yi-jian-tian-jia-peng-zhuang-ti-collidercha-jian">
         </link>
-        <updated>2020-01-02T06:17:04.000Z</updated>
+        <updated>2017-08-18T06:17:04.000Z</updated>
         <content type="html"><![CDATA[<p>效果图：<br>
 <img src="http://upload-images.jianshu.io/upload_images/101711-16430da342436f83.gif?imageMogr2/auto-orient/strip" alt="" loading="lazy"></p>
 <p>插件下载地址：<br>
@@ -1077,7 +1030,7 @@ public class AddCollider : EditorWindow
         <id>https://bouvet1.github.io/post/unity54-she-xiang-ji-wei-rao-wu-ti-xuan-zhuan-yu-fang-xiang-cao-zuo</id>
         <link href="https://bouvet1.github.io/post/unity54-she-xiang-ji-wei-rao-wu-ti-xuan-zhuan-yu-fang-xiang-cao-zuo">
         </link>
-        <updated>2020-01-02T06:16:29.000Z</updated>
+        <updated>2017-07-04T06:16:29.000Z</updated>
         <content type="html"><![CDATA[<pre><code>public Transform target;//获取旋转目标
 
 private void camerarotate() //摄像机围绕目标旋转操作
