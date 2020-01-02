@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://bouvet1.github.io</id>
     <title>Bouvet</title>
-    <updated>2020-01-02T08:41:20.802Z</updated>
+    <updated>2020-01-02T08:41:44.632Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://bouvet1.github.io"/>
     <link rel="self" href="https://bouvet1.github.io/atom.xml"/>
@@ -820,7 +820,7 @@ public class Test : MonoBehaviour
 ]]></content>
     </entry>
     <entry>
-        <title type="html"><![CDATA[Uniy5.4 实现动态3D图表效果(一)]]></title>
+        <title type="html"><![CDATA[Uniy5.4 实现动态3D图表效果 一]]></title>
         <id>https://bouvet1.github.io/post/uniy54-shi-xian-dong-tai-3d-tu-biao-xiao-guo-yi</id>
         <link href="https://bouvet1.github.io/post/uniy54-shi-xian-dong-tai-3d-tu-biao-xiao-guo-yi">
         </link>
