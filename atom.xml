@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://bouvet1.github.io</id>
     <title>Bouvet</title>
-    <updated>2020-01-02T07:18:38.296Z</updated>
+    <updated>2020-01-02T07:28:22.025Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://bouvet1.github.io"/>
     <link rel="self" href="https://bouvet1.github.io/atom.xml"/>
@@ -33,6 +33,42 @@
 </li>
 </ul>
 <figure data-type="image" tabindex="1"><img src="https://bouvet1.github.io/post-images/1577949499798.png" alt="" loading="lazy"></figure>
+<ul>
+<li>
+<h2 id="代码">💻<strong>代码</strong></h2>
+<h3 id="生成qr"><strong>生成QR</strong></h3>
+<p>通过zxing库生成QR Texture2D</p>
+<pre><code>public Texture2D generateQR(string qr)
+{
+    Texture2D encoded = new Texture2D(200, 200, TextureFormat.RGBA32, false);
+    var colors = Encode(qr, 200, 200);
+    encoded.SetPixels32(colors);
+    encoded.Apply();
+    return encoded;
+}
+
+private static Color32[] Encode(string textForEncoding, int width, int height) 
+{
+    var writer = new BarcodeWriter
+    {
+        Format = BarcodeFormat.QR_CODE,
+        Options = new QrCodeEncodingOptions
+        {
+            Height = height,
+            Width = width,
+            Margin = 2,
+            PureBarcode = true
+        }
+    };
+    return writer.Write(textForEncoding);
+}
+</code></pre>
+<h3 id="显示到unity编辑器"><strong>显示到Unity编辑器</strong></h3>
+<pre><code>QRtex = QRManager.Instance.generateQR(apkUrl); //获取QR
+GUILayout.Box(QRtex, GUILayout.ExpandWidth(true));//显示QR
+</code></pre>
+</li>
+</ul>
 ]]></content>
     </entry>
     <entry>
