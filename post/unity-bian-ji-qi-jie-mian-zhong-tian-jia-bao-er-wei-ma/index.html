@@ -2,22 +2,22 @@
   <head>
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Uniy5.4 实现动态3D图表效果(一) | Bouvet</title>
+<title>Unity编辑器界面中添加包二维码 | Bouvet</title>
 <link rel="shortcut icon" href="https://bouvet1.github.io/favicon.ico?v=1577949516454">
 <link href="https://cdn.remixicon.com/releases/v2.1.0/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://bouvet1.github.io/styles/main.css">
-<link rel="alternate" type="application/atom+xml" title="Uniy5.4 实现动态3D图表效果(一) | Bouvet - Atom Feed" href="https://bouvet1.github.io/atom.xml">
+<link rel="alternate" type="application/atom+xml" title="Unity编辑器界面中添加包二维码 | Bouvet - Atom Feed" href="https://bouvet1.github.io/atom.xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
 
 
 
-    <meta name="description" content="原本想使用插件来做，奈何囊中羞涩，只能自己写了。通过Value值修改高度。效果图：
+    <meta name="description" content="
 
-代码：
-using UnityEngine;
-using System.Collections;
-using UnityEngine;
-using Sys..." />
+🔔痛点
+每一次的游戏在Jenkins打包后，都需要在通过二维码生成网站将打包好后的下载链接转换成二维码让手机扫码下载，太过于繁琐。
+
+💬需求
+能够在unity界面下直接显示最新的二维码界面，打包完成后直接通过手机扫码即可，方便很多。..." />
     <meta name="keywords" content="Unity" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
     <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
@@ -80,11 +80,11 @@ using Sys..." />
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              Uniy5.4 实现动态3D图表效果(一)
+              Unity编辑器界面中添加包二维码
             </h2>
             <div class="post-info">
               <span>
-                2017-08-18
+                2020-01-02
               </span>
               <span>
                 1 min read
@@ -96,51 +96,41 @@ using Sys..." />
               
             </div>
             
-              <img class="post-feature-image" src="http://upload-images.jianshu.io/upload_images/101711-55674da7f3c5586a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="">
+              <img class="post-feature-image" src="https://bouvet1.github.io/post-images/unity-bian-ji-qi-jie-mian-zhong-tian-jia-bao-er-wei-ma.png" alt="">
             
             <div class="post-content-wrapper">
               <div class="post-content">
-                <p>原本想使用插件来做，奈何囊中羞涩，只能自己写了。通过Value值修改高度。效果图：<br>
-<img src="http://upload-images.jianshu.io/upload_images/101711-55674da7f3c5586a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image" loading="lazy"><br>
-代码：</p>
-<pre><code>using UnityEngine;
-using System.Collections;
-using UnityEngine;
-using System.Collections;
-
-public class cube : MonoBehaviour
-{
-    private Vector3[] vertices;
-    private Mesh mesh;
-    [Range(0, 10)]
-    public float value = 1;//设置高度值
-    // Use this for initialization
-    void Start()
-    {
-        vertices = GetComponent&lt;MeshFilter&gt;().mesh.vertices;//获取Gameobject meshfilter组件
-        mesh = GetComponent&lt;MeshFilter&gt;().mesh;//获取meshfilter组件中mesh数组数据
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        for (int i = 0; i &lt; vertices.Length; i++)//遍历数组
-        {
-
-            if (vertices[i].y &gt;= 0f)//判断mesh是否为顶部
-            {
-                vertices[i].y = value;//设置mesh顶部高度等于高度值
-            }
-        }
-        mesh.vertices = vertices;//刷新
-    }
-}
-</code></pre>
-<p>项目地址：https://github.com/baishuisr1/Unity-3D-Chart</p>
+                <ul>
+<li>
+<h2 id="痛点">🔔<strong>痛点</strong></h2>
+每一次的游戏在Jenkins打包后，都需要在通过二维码生成网站将打包好后的下载链接转换成二维码让手机扫码下载，太过于繁琐。</li>
+<li>
+<h2 id="需求">💬<strong>需求</strong></h2>
+能够在unity界面下直接显示最新的二维码界面，打包完成后直接通过手机扫码即可，方便很多。</li>
+<li>
+<h2 id="实现">💭<strong>实现</strong></h2>
+1 爬虫爬取Jenkins站内包信息<br>
+2 每一次刷新unity获取Jenkins最新信息，刷新二维码<br>
+3 取得下载链接，转成二维码显示到unity编辑器</li>
+<li>
+<h2 id="效果">🎊<strong>效果</strong></h2>
+</li>
+</ul>
+<figure data-type="image" tabindex="1"><img src="https://bouvet1.github.io/post-images/1577949499798.png" alt="" loading="lazy"></figure>
 
               </div>
               <div class="toc-container">
-                
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E7%97%9B%E7%82%B9">🔔<strong>痛点</strong></a></li>
+<li><a href="#%E9%9C%80%E6%B1%82">💬<strong>需求</strong></a></li>
+<li><a href="#%E5%AE%9E%E7%8E%B0">💭<strong>实现</strong></a></li>
+<li><a href="#%E6%95%88%E6%9E%9C">🎊<strong>效果</strong></a></li>
+</ul>
+</li>
+</ul>
+
               </div>
             </div>
           </article>
@@ -149,9 +139,9 @@ public class cube : MonoBehaviour
         
           <div class="next-post">
             <div class="next">下一篇</div>
-            <a href="https://bouvet1.github.io/post/unity-54-wei-mo-xing-zu-yi-jian-tian-jia-peng-zhuang-ti-collidercha-jian">
+            <a href="https://bouvet1.github.io/post/unity-dui-xiang-chi-feng-zhuang">
               <h3 class="post-title">
-                Unity 5.4 为模型组一键添加碰撞体(Collider)插件
+                Unity对象池封装
               </h3>
             </a>
           </div>

@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://bouvet1.github.io</id>
     <title>Bouvet</title>
-    <updated>2020-01-02T06:51:57.232Z</updated>
+    <updated>2020-01-02T07:18:38.296Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://bouvet1.github.io"/>
     <link rel="self" href="https://bouvet1.github.io/atom.xml"/>
@@ -10,6 +10,31 @@
     <logo>https://bouvet1.github.io/images/avatar.png</logo>
     <icon>https://bouvet1.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Bouvet</rights>
+    <entry>
+        <title type="html"><![CDATA[Unity编辑器界面中添加包二维码]]></title>
+        <id>https://bouvet1.github.io/post/unity-bian-ji-qi-jie-mian-zhong-tian-jia-bao-er-wei-ma</id>
+        <link href="https://bouvet1.github.io/post/unity-bian-ji-qi-jie-mian-zhong-tian-jia-bao-er-wei-ma">
+        </link>
+        <updated>2020-01-02T06:53:11.000Z</updated>
+        <content type="html"><![CDATA[<ul>
+<li>
+<h2 id="痛点">🔔<strong>痛点</strong></h2>
+每一次的游戏在Jenkins打包后，都需要在通过二维码生成网站将打包好后的下载链接转换成二维码让手机扫码下载，太过于繁琐。</li>
+<li>
+<h2 id="需求">💬<strong>需求</strong></h2>
+能够在unity界面下直接显示最新的二维码界面，打包完成后直接通过手机扫码即可，方便很多。</li>
+<li>
+<h2 id="实现">💭<strong>实现</strong></h2>
+1 爬虫爬取Jenkins站内包信息<br>
+2 每一次刷新unity获取Jenkins最新信息，刷新二维码<br>
+3 取得下载链接，转成二维码显示到unity编辑器</li>
+<li>
+<h2 id="效果">🎊<strong>效果</strong></h2>
+</li>
+</ul>
+<figure data-type="image" tabindex="1"><img src="https://bouvet1.github.io/post-images/1577949499798.png" alt="" loading="lazy"></figure>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Unity对象池封装]]></title>
         <id>https://bouvet1.github.io/post/unity-dui-xiang-chi-feng-zhuang</id>
