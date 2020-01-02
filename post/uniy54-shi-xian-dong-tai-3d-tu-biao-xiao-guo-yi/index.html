@@ -1,106 +1,88 @@
-<html>
-  <head>
-    <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Uniy5.4 实现动态3D图表效果(一) | Bouvet</title>
-<link rel="shortcut icon" href="https://bouvet1.github.io/favicon.ico?v=1577951198288">
-<link href="https://cdn.remixicon.com/releases/v2.1.0/remixicon.css" rel="stylesheet">
-<link rel="stylesheet" href="https://bouvet1.github.io/styles/main.css">
-<link rel="alternate" type="application/atom+xml" title="Uniy5.4 实现动态3D图表效果(一) | Bouvet - Atom Feed" href="https://bouvet1.github.io/atom.xml">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+<!DOCTYPE html>
+<html lang="zh-CN">
+ <head>
+     <meta charset="utf-8" />
+  <title>Uniy5.4 实现动态3D图表效果(一) | Bouvet</title>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+  <link rel="stylesheet" href="https://bouvet1.github.io/styles/main.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+   <script src="https://cdn.staticfile.org/highlight.js/9.15.9/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+ </head>
+ <body>
+     <div class="sidebar animated fadeInDown">
+   <div class="logo-title">
+    <div class="title">
+     <img src="https://bouvet1.github.io/images/avatar.png?v=1577951763676" style="width:127px;" />
+
+     <h3 title=""><a href="/">Bouvet</a></h3>
+
+     <div class="description">
+      <p>Cyberpunk</p>
+     </div>
+    </div>
+   </div>
+   <ul class="social-links">
 
 
+    
 
-    <meta name="description" content="原本想使用插件来做，奈何囊中羞涩，只能自己写了。通过Value值修改高度。效果图：
+    
 
-代码：
-using UnityEngine;
-using System.Collections;
-using UnityEngine;
-using Sys..." />
-    <meta name="keywords" content="Unity" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
-    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
-  </head>
-  <body>
-    <div class="main">
-      <div class="main-content">
-        <div class="site-header">
-  <a href="https://bouvet1.github.io">
-  <img class="avatar" src="https://bouvet1.github.io/images/avatar.png?v=1577951198288" alt="">
-  </a>
-  <h1 class="site-title">
-    Bouvet
-  </h1>
-  <p class="site-description">
-    至繁归于至简
-  </p>
-  <div class="menu-container">
     
-      
-        <a href="/" class="menu">
-          首页
-        </a>
-      
+
     
-      
-        <a href="/archives" class="menu">
-          归档
-        </a>
-      
+
     
-      
-        <a href="/tags" class="menu">
-          标签
-        </a>
-      
+
     
-      
-        <a href="/post/about" class="menu">
-          关于
-        </a>
-      
+
     
+
+    
+
+    
+
+    
+
+   </ul>
+   <div class="footer">
+    <div class="by_farbox">
+   <a>Test</a>
+    </div>
+    
+
+    </div>
+   </div>
   </div>
-  <div class="social-container">
+  <div class="main">
+     <div class="page-top animated fadeInDown">
+    <div class="nav">
     
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-  </div>
-</div>
+     <li><a  href="/">首页</a></li>
 
-        <div class="post-detail">
-          <article class="post">
-            <h2 class="post-title">
-              Uniy5.4 实现动态3D图表效果(一)
-            </h2>
-            <div class="post-info">
-              <span>
-                2017-08-18
-              </span>
-              <span>
-                1 min read
-              </span>
-              
-                <a href="https://bouvet1.github.io/tag/C7cY_GUuL" class="post-tag">
-                  # Unity
-                </a>
-              
-            </div>
-            
-              <img class="post-feature-image" src="http://upload-images.jianshu.io/upload_images/101711-55674da7f3c5586a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="">
-            
-            <div class="post-content-wrapper">
-              <div class="post-content">
-                <p>原本想使用插件来做，奈何囊中羞涩，只能自己写了。通过Value值修改高度。效果图：<br>
+     <li><a  href="/archives">归档</a></li>
+
+     <li><a  href="/tags">标签</a></li>
+
+     <li><a  href="/post/about">关于</a></li>
+
+    </div>
+    <div class="information">
+     <div class="back_btn">
+      <li><a class="fa fa-chevron-left" onclick="window.history.go(-1)"> </a></li>
+     </div>
+    </div>
+   </div>
+   <div class="autopagerize_page_element">
+    <div class="content">
+     <div class="post-page">
+      <div class="post animated fadeInDown">
+       <div class="post-title">
+        <h3><a>Uniy5.4 实现动态3D图表效果(一)</a></h3>
+       </div>
+       <div class="post-content">
+        <p>原本想使用插件来做，奈何囊中羞涩，只能自己写了。通过Value值修改高度。效果图：<br>
 <img src="http://upload-images.jianshu.io/upload_images/101711-55674da7f3c5586a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image" loading="lazy"><br>
 代码：</p>
 <pre><code>using UnityEngine;
@@ -138,76 +120,50 @@ public class cube : MonoBehaviour
 </code></pre>
 <p>项目地址：https://github.com/baishuisr1/Unity-3D-Chart</p>
 
-              </div>
-              <div class="toc-container">
-                
-              </div>
-            </div>
-          </article>
+       </div>
+       <div class="post-footer">
+        <div class="meta">
+         <div class="info">
+          <i class="fa fa-sun-o"></i>
+          <span class="date">2017-08-18</span>
+          <i class="fa fa-tag"></i>
+          
+          <a class="tag" href="https://bouvet1.github.io/tag/C7cY_GUuL" title="Unity">Unity </a>
+          
+         </div>
         </div>
-
-        
-          <div class="next-post">
-            <div class="next">下一篇</div>
-            <a href="https://bouvet1.github.io/post/unity-54-wei-mo-xing-zu-yi-jian-tian-jia-peng-zhuang-ti-collidercha-jian">
-              <h3 class="post-title">
-                Unity 5.4 为模型组一键添加碰撞体(Collider)插件
-              </h3>
-            </a>
-          </div>
-        
-
-        
-
-        <div class="site-footer">
-  
-  <a class="rss" href="https://bouvet1.github.io/atom.xml" target="_blank">
-    <i class="ri-rss-line"></i> RSS
-  </a>
-</div>
-
+       </div>
       </div>
+      <div class="share">
+       <div class="evernote">
+        <a class="fa fa-bookmark" href="javascript:(function(){EN_CLIP_HOST='http://www.evernote.com';try{var%20x=document.createElement('SCRIPT');x.type='text/javascript';x.src=EN_CLIP_HOST+'/public/bookmarkClipper.js?'+(new%20Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){location.href=EN_CLIP_HOST+'/clip.action?url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title);}})();" ref="nofollow" target="_blank"></a>
+       </div>
+       <div class="weibo">
+        <a class="fa fa-weibo" href="javascript:void((function(s,d,e){try{}catch(e){}var f='http://service.weibo.com/share/share.php?',u=d.location.href,p=['url=',e(u),'&amp;title=',e(d.title),'&amp;appkey=2924220432'].join('');function a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=620,height=450,left=',(s.width-620)/2,',top=',(s.height-450)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})(screen,document,encodeURIComponent));"></a>
+       </div>
+       <div class="twitter">
+        <a class="fa fa-twitter" href="http://twitter.com/home?status=,https://bouvet1.github.io/post/uniy54-shi-xian-dong-tai-3d-tu-biao-xiao-guo-yi,;"></a>
+       </div>
+      </div>
+      <div class="pagination">
+       <ul class="clearfix">
+
+        <li class="pre pagbuttons"><a class="btn" role="navigation" href="https://bouvet1.github.io/post/unity54-tong-guo-ji-shi-qi-fang-fa-shi-xian-zhi-xing-shi-jian-jian-ge-yu-yan-shi-zhi-xing" title="unity5.4 通过计时器方法实现执行时间间隔与延时执行">上一篇</a></li>
+         
+        
+        <li class="next pagbuttons"><a class="btn" role="navigation" href="https://bouvet1.github.io/post/unity-54-wei-mo-xing-zu-yi-jian-tian-jia-peng-zhuang-ti-collidercha-jian" title=" Unity 5.4 为模型组一键添加碰撞体(Collider)插件">下一篇</a></li>
+        
+       </ul>
+      </div>
+        
+     </div>
     </div>
+   </div>
+  </div>
+  <script src="https://bouvet1.github.io/media/scripts/jquery.js"></script>
+  <script src="https://bouvet1.github.io/media/scripts/jquery-migrate-1.2.1.min.js"></script>
+  <script src="https://bouvet1.github.io/media/scripts/jquery.appear.js"></script>
 
-    <script>
-      hljs.initHighlightingOnLoad()
 
-      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
-
-      // This should probably be throttled.
-      // Especially because it triggers during smooth scrolling.
-      // https://lodash.com/docs/4.17.10#throttle
-      // You could do like...
-      // window.addEventListener("scroll", () => {
-      //    _.throttle(doThatStuff, 100);
-      // });
-      // Only not doing it here to keep this Pen dependency-free.
-
-      window.addEventListener("scroll", event => {
-        let fromTop = window.scrollY;
-
-        mainNavLinks.forEach((link, index) => {
-          let section = document.getElementById(decodeURI(link.hash).substring(1));
-          let nextSection = null
-          if (mainNavLinks[index + 1]) {
-            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
-          }
-          if (section.offsetTop <= fromTop) {
-            if (nextSection) {
-              if (nextSection.offsetTop > fromTop) {
-                link.classList.add("current");
-              } else {
-                link.classList.remove("current");    
-              }
-            } else {
-              link.classList.add("current");
-            }
-          } else {
-            link.classList.remove("current");
-          }
-        });
-      });
-
-    </script>
-  </body>
+ </body>
 </html>
