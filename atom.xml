@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://bouvet1.github.io</id>
     <title>Bouvet</title>
-    <updated>2020-01-02T11:39:54.810Z</updated>
+    <updated>2020-01-04T07:51:47.873Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://bouvet1.github.io"/>
     <link rel="self" href="https://bouvet1.github.io/atom.xml"/>
@@ -10,6 +10,94 @@
     <logo>https://bouvet1.github.io/images/avatar.png</logo>
     <icon>https://bouvet1.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Bouvet</rights>
+    <entry>
+        <title type="html"><![CDATA[<转载>Unity SpriteAtlas]]></title>
+        <id>https://bouvet1.github.io/post/lesszhuan-zai-greater</id>
+        <link href="https://bouvet1.github.io/post/lesszhuan-zai-greater">
+        </link>
+        <updated>2020-01-04T07:47:51.000Z</updated>
+        <content type="html"><![CDATA[<p>简介</p>
+<p>Unity2017之后开始使用Sprite Atlas（精灵图集），Sprite Atlas用于替换现有的Sprite Packer，让制作图集（Atlas）的过程更加便利和高效。针对现有的图集打包系统Sprite Packer在性能和易用性上的不足，进行了全面改善。除此之外，相比Sprite Packer，Sprite Atlas将对精灵更多的控制权交还给用户。由用户来掌控图集的打包过程以及加载时机，更加利于对系统性能的控制。<br>
+属性说明</p>
+<p>Sprite Atlas是一种资源，可以像其它资源一样在Unity中创建，例如预制件、场景等。可以在检视窗口中设定要打包的精灵及其参数，例如图集的打包方式、输出贴图的压缩格式等，属性一览：</p>
+<pre><code>Type有Master,Variant两种，所谓Variant，就是指原有图集的一个变种。它会复制原有图集的贴图，并根据一个比例系数(scale)来调整复制贴图的大小。这样的Variant通常用于为高分辨率和低分辨率的屏幕准备不同的图集；
+
+Include in Build：仅作用于编辑器中，如果勾选就在点击运行时自动加载纹理集，否则不自动加载，并触发SpriteAtlasManager.atlasRequested 事件，需要在回调里自己手动填充；
+Tight Packing：可以更大程度压缩镂空的图片，但是镂空的部分，会放入别的图片，很有可能造成他们意外地出现在你的UI中；
+Allow Rotation：打包时是否支持精灵旋转；
+Filter Mode：贴图的采样模式；
+Objects for Packing：需要打到这个图集的图片拖到这里。
+</code></pre>
+<p>使用流程</p>
+<pre><code>设置 Editor Settings 中 Sprite Packer 的 Mode 为 Always Enabled
+通过 Project 面板的右键创建 Sprite Atlas
+选中创建的 Sprite Atlas, 并在 Inspector 面板的 Objects for Packing部分添加需要打到图集里的sprite
+
+点击 Pack Preview 按钮预览合并的纹理集
+注意事项：
+    图片需要设置为Sprite(2D and UI), 否则不能真正包含到 Sprite Atlas 里；
+    不能将原始纹理集从 Unity 的 Assets 目录中移除，否则将不能正常显示。 即使是被打包到了Asset bundle里也不能删掉原始的纹理集；
+</code></pre>
+<p>加载图集</p>
+<p>运行时访问图集</p>
+<pre><code>      using UnityEditor;
+      using UnityEngine;
+      using UnityEngine.U2D;
+      using UnityEngine.UI;
+
+      public class LoadSprite : MonoBehaviour
+      {
+          void Start()
+          {
+              SpriteAtlas atlas = AssetDatabase.LoadAssetAtPath&lt;SpriteAtlas&gt;(&quot;Assets/Atlas/master.spriteatlas&quot;);
+              Sprite sprite = atlas.GetSprite(&quot;img1&quot;);
+
+              if (sprite != null)
+              {
+                  GetComponent&lt;Image&gt;().sprite = sprite;
+              }
+          }
+      }
+
+从AssetBundle加载使用图集
+
+此处摘录自Unity2017的新spriteAtlas
+
+      using UnityEngine;
+      using UnityEngine.U2D;
+
+      public class SpriteAtlasManager : MonoBehaviour {
+          void Awake () {
+              // 注册事件
+              SpriteAtlasManager.atlasRequested += OnAtlasRequested;
+          }
+
+          private void OnAtlasRequested(string tag, Action&lt;SpriteAtlas&gt; action) {
+              // 加载纹理集
+              // unity2017.1版本：当收到回调后必须立刻用纹理集填充
+              // SpriteAtlas atlas = LoadAtlas(tag);
+              // action(atlas);
+
+              // 2018.2.1f1版本：可以异步加载纹理集，只需向action回调填充纹理集就可以了
+              // 当纹理集没有被填充前，Image等组件将显示为默认的白色纹理
+              // 一旦纹理填充后，Image等组件将自动显示为正确的纹理
+              StartCoroutine(DoLoadAsset(action, tag));
+          }
+
+          private IEnumerator DoLoadAsset(Action&lt;SpriteAtlas&gt; action, string tag)
+          {
+              yield return new WaitForSeconds(3);
+              var ab = AssetBundle.LoadFromFileAsync(getpath(tag));
+              yield return ab;
+
+              print(&quot;DoloadAsset frame:&quot; + Time.frameCount);
+              var sa = ab.assetBundle.LoadAsset&lt;SpriteAtlas&gt;(tag);
+              print(&quot;sa: &quot; + sa);
+              action(sa);
+          }
+      }</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Unity编辑器界面中添加包二维码]]></title>
         <id>https://bouvet1.github.io/post/unity-bian-ji-qi-jie-mian-zhong-tian-jia-bao-er-wei-ma</id>
@@ -1083,43 +1171,6 @@ public class AddCollider : EditorWindow
         return vertices;
     }
 }
-</code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Unity5.4 摄像机围绕物体旋转与方向操作]]></title>
-        <id>https://bouvet1.github.io/post/unity54-she-xiang-ji-wei-rao-wu-ti-xuan-zhuan-yu-fang-xiang-cao-zuo</id>
-        <link href="https://bouvet1.github.io/post/unity54-she-xiang-ji-wei-rao-wu-ti-xuan-zhuan-yu-fang-xiang-cao-zuo">
-        </link>
-        <updated>2017-07-04T06:16:29.000Z</updated>
-        <content type="html"><![CDATA[<pre><code>public Transform target;//获取旋转目标
-
-private void camerarotate() //摄像机围绕目标旋转操作
-    {
-        transform.RotateAround(target.position, Vector3.up, speed*Time.deltaTime); //摄像机围绕目标旋转
-        var mouse_x = Input.GetAxis(&quot;Mouse X&quot;);//获取鼠标X轴移动
-        var mouse_y = -Input.GetAxis(&quot;Mouse Y&quot;);//获取鼠标Y轴移动
-        if (Input.GetKey(KeyCode.Mouse1))
-        {
-            transform.Translate(Vector3.left*(mouse_x*15f)*Time.deltaTime);
-            transform.Translate(Vector3.up*(mouse_y*15f)*Time.deltaTime);
-        }
-        if (Input.GetKey(KeyCode.Mouse0))
-        {
-            transform.RotateAround(target.transform.position, Vector3.up, mouse_x*5);
-            transform.RotateAround(target.transform.position, transform.right, mouse_y*5);
-        }
-    }
-
-    private void camerazoom() //摄像机滚轮缩放
-    {
-        if (Input.GetAxis(&quot;Mouse ScrollWheel&quot;) &gt; 0)
-            transform.Translate(Vector3.forward*0.5f);
-
-
-        if (Input.GetAxis(&quot;Mouse ScrollWheel&quot;) &lt; 0)
-            transform.Translate(Vector3.forward*-0.5f);
-    }
 </code></pre>
 ]]></content>
     </entry>

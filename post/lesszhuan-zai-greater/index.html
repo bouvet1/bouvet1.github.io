@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+ <head>
+     <meta charset="utf-8" />
+  <title>&lt;转载&gt;Unity SpriteAtlas | Bouvet</title>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+  <link rel="stylesheet" href="https://bouvet1.github.io/styles/main.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+   <script src="https://cdn.staticfile.org/highlight.js/9.15.9/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+ </head>
+ <body>
+     <div class="sidebar animated fadeInDown">
+   <div class="logo-title">
+    <div class="title">
+     <img src="https://bouvet1.github.io/images/avatar.png?v=1578124235580" style="width:127px;" />
+
+     <h3 title=""><a href="/">Bouvet</a></h3>
+
+     <div class="description">
+      <p>Cyberpunk!</p>
+     </div>
+    </div>
+   </div>
+   <ul class="social-links">
+
+
+    <li><a href="a"><i class="fa fa-rss"></i></a></li>
+ 
+    
+
+    <li><a href="a"><i class="fa fa-twitter"></i></a></li>
+ 
+    
+
+    <li><a href="a"><i class="fa fa-facebook"></i></a></li>
+ 
+    
+
+    <li><a href="a"><i class="fa fa-github"></i></a></li>
+ 
+    
+
+    <li><a href="a"><i class="fa fa-linkedin"></i></a></li>
+ 
+    
+
+    
+
+    
+
+    
+
+    
+
+    <li><a href="a"><i class="fa fa-send"></i></a></li>
+ 
+    
+
+   </ul>
+   <div class="footer">
+    <div class="by_farbox">
+   
+    </div>
+    
+
+    </div>
+   </div>
+  </div>
+  <div class="main">
+     <div class="page-top animated fadeInDown">
+    <div class="nav">
+    
+     <li><a  href="/">首页</a></li>
+
+     <li><a  href="/archives">归档</a></li>
+
+     <li><a  href="/tags">标签</a></li>
+
+     <li><a  href="/post/about">关于</a></li>
+
+    </div>
+    <div class="information">
+     <div class="back_btn">
+      <li><a class="fa fa-chevron-left" onclick="window.history.go(-1)"> </a></li>
+     </div>
+    </div>
+   </div>
+   <div class="autopagerize_page_element">
+    <div class="content">
+     <div class="post-page">
+      <div class="post animated fadeInDown">
+       <div class="post-title">
+        <h3><a>&lt;转载&gt;Unity SpriteAtlas</a></h3>
+       </div>
+       <div class="post-content">
+        <p>简介</p>
+<p>Unity2017之后开始使用Sprite Atlas（精灵图集），Sprite Atlas用于替换现有的Sprite Packer，让制作图集（Atlas）的过程更加便利和高效。针对现有的图集打包系统Sprite Packer在性能和易用性上的不足，进行了全面改善。除此之外，相比Sprite Packer，Sprite Atlas将对精灵更多的控制权交还给用户。由用户来掌控图集的打包过程以及加载时机，更加利于对系统性能的控制。<br>
+属性说明</p>
+<p>Sprite Atlas是一种资源，可以像其它资源一样在Unity中创建，例如预制件、场景等。可以在检视窗口中设定要打包的精灵及其参数，例如图集的打包方式、输出贴图的压缩格式等，属性一览：</p>
+<pre><code>Type有Master,Variant两种，所谓Variant，就是指原有图集的一个变种。它会复制原有图集的贴图，并根据一个比例系数(scale)来调整复制贴图的大小。这样的Variant通常用于为高分辨率和低分辨率的屏幕准备不同的图集；
+
+Include in Build：仅作用于编辑器中，如果勾选就在点击运行时自动加载纹理集，否则不自动加载，并触发SpriteAtlasManager.atlasRequested 事件，需要在回调里自己手动填充；
+Tight Packing：可以更大程度压缩镂空的图片，但是镂空的部分，会放入别的图片，很有可能造成他们意外地出现在你的UI中；
+Allow Rotation：打包时是否支持精灵旋转；
+Filter Mode：贴图的采样模式；
+Objects for Packing：需要打到这个图集的图片拖到这里。
+</code></pre>
+<p>使用流程</p>
+<pre><code>设置 Editor Settings 中 Sprite Packer 的 Mode 为 Always Enabled
+通过 Project 面板的右键创建 Sprite Atlas
+选中创建的 Sprite Atlas, 并在 Inspector 面板的 Objects for Packing部分添加需要打到图集里的sprite
+
+点击 Pack Preview 按钮预览合并的纹理集
+注意事项：
+    图片需要设置为Sprite(2D and UI), 否则不能真正包含到 Sprite Atlas 里；
+    不能将原始纹理集从 Unity 的 Assets 目录中移除，否则将不能正常显示。 即使是被打包到了Asset bundle里也不能删掉原始的纹理集；
+</code></pre>
+<p>加载图集</p>
+<p>运行时访问图集</p>
+<pre><code>      using UnityEditor;
+      using UnityEngine;
+      using UnityEngine.U2D;
+      using UnityEngine.UI;
+
+      public class LoadSprite : MonoBehaviour
+      {
+          void Start()
+          {
+              SpriteAtlas atlas = AssetDatabase.LoadAssetAtPath&lt;SpriteAtlas&gt;(&quot;Assets/Atlas/master.spriteatlas&quot;);
+              Sprite sprite = atlas.GetSprite(&quot;img1&quot;);
+
+              if (sprite != null)
+              {
+                  GetComponent&lt;Image&gt;().sprite = sprite;
+              }
+          }
+      }
+
+从AssetBundle加载使用图集
+
+此处摘录自Unity2017的新spriteAtlas
+
+      using UnityEngine;
+      using UnityEngine.U2D;
+
+      public class SpriteAtlasManager : MonoBehaviour {
+          void Awake () {
+              // 注册事件
+              SpriteAtlasManager.atlasRequested += OnAtlasRequested;
+          }
+
+          private void OnAtlasRequested(string tag, Action&lt;SpriteAtlas&gt; action) {
+              // 加载纹理集
+              // unity2017.1版本：当收到回调后必须立刻用纹理集填充
+              // SpriteAtlas atlas = LoadAtlas(tag);
+              // action(atlas);
+
+              // 2018.2.1f1版本：可以异步加载纹理集，只需向action回调填充纹理集就可以了
+              // 当纹理集没有被填充前，Image等组件将显示为默认的白色纹理
+              // 一旦纹理填充后，Image等组件将自动显示为正确的纹理
+              StartCoroutine(DoLoadAsset(action, tag));
+          }
+
+          private IEnumerator DoLoadAsset(Action&lt;SpriteAtlas&gt; action, string tag)
+          {
+              yield return new WaitForSeconds(3);
+              var ab = AssetBundle.LoadFromFileAsync(getpath(tag));
+              yield return ab;
+
+              print(&quot;DoloadAsset frame:&quot; + Time.frameCount);
+              var sa = ab.assetBundle.LoadAsset&lt;SpriteAtlas&gt;(tag);
+              print(&quot;sa: &quot; + sa);
+              action(sa);
+          }
+      }</code></pre>
+
+       </div>
+       <div class="post-footer">
+        <div class="meta">
+         <div class="info">
+          <i class="fa fa-sun-o"></i>
+          <span class="date">2020-01-04</span>
+          <i class="fa fa-tag"></i>
+          
+          <a class="tag" href="https://bouvet1.github.io/tag/S2UU6nOW0" title="转载">转载 </a>
+          
+          <a class="tag" href="https://bouvet1.github.io/tag/C7cY_GUuL" title="Unity">Unity </a>
+          
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="share">
+       <div class="evernote">
+        <a class="fa fa-bookmark" href="javascript:(function(){EN_CLIP_HOST='http://www.evernote.com';try{var%20x=document.createElement('SCRIPT');x.type='text/javascript';x.src=EN_CLIP_HOST+'/public/bookmarkClipper.js?'+(new%20Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){location.href=EN_CLIP_HOST+'/clip.action?url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title);}})();" ref="nofollow" target="_blank"></a>
+       </div>
+       <div class="weibo">
+        <a class="fa fa-weibo" href="javascript:void((function(s,d,e){try{}catch(e){}var f='http://service.weibo.com/share/share.php?',u=d.location.href,p=['url=',e(u),'&amp;title=',e(d.title),'&amp;appkey=2924220432'].join('');function a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=620,height=450,left=',(s.width-620)/2,',top=',(s.height-450)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})(screen,document,encodeURIComponent));"></a>
+       </div>
+       <div class="twitter">
+        <a class="fa fa-twitter" href="http://twitter.com/home?status=,https://bouvet1.github.io/post/lesszhuan-zai-greater,;"></a>
+       </div>
+      </div>
+      <div class="pagination">
+       <ul class="clearfix">
+
+        
+        <li class="next pagbuttons"><a class="btn" role="navigation" href="https://bouvet1.github.io/post/unity-bian-ji-qi-jie-mian-zhong-tian-jia-bao-er-wei-ma" title=" Unity编辑器界面中添加包二维码">下一篇</a></li>
+        
+       </ul>
+      </div>
+        
+     </div>
+    </div>
+   </div>
+  </div>
+  <script src="https://bouvet1.github.io/media/scripts/jquery.js"></script>
+  <script src="https://bouvet1.github.io/media/scripts/jquery-migrate-1.2.1.min.js"></script>
+  <script src="https://bouvet1.github.io/media/scripts/jquery.appear.js"></script>
+
+
+ </body>
+</html>
