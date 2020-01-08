@@ -2,7 +2,7 @@
 <html lang="zh-CN">
  <head>
      <meta charset="utf-8" />
-  <title>Unity编辑器界面中添加包二维码 | Bouvet</title>
+  <title>年终总结 | Bouvet</title>
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
   <link rel="stylesheet" href="https://bouvet1.github.io/styles/main.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
@@ -91,72 +91,28 @@
      <div class="post-page">
       <div class="post animated fadeInDown">
        <div class="post-title">
-        <h3><a>Unity编辑器界面中添加包二维码</a></h3>
+        <h3><a>年终总结</a></h3>
        </div>
        <div class="post-content">
-        <ul>
-<li>
-<h2 id="痛点">🔔<strong>痛点</strong></h2>
-每一次的游戏在Jenkins打包后，都需要在通过二维码生成网站将打包好后的下载链接转换成二维码让手机扫码下载，太过于繁琐。</li>
-<li>
-<h2 id="需求">💬<strong>需求</strong></h2>
-能够在unity界面下直接显示最新的二维码界面，打包完成后直接通过手机扫码即可，方便很多。</li>
-<li>
-<h2 id="实现">💭<strong>实现</strong></h2>
-1 爬虫爬取Jenkins站内包信息<br>
-2 每一次刷新unity获取Jenkins最新信息，刷新二维码<br>
-3 取得下载链接，转成二维码显示到unity编辑器</li>
-<li>
-<h2 id="效果">🎊<strong>效果</strong></h2>
-</li>
-</ul>
-<figure data-type="image" tabindex="1"><img src="https://bouvet1.github.io/post-images/1577949499798.png" alt="" loading="lazy"></figure>
-<ul>
-<li>
-<h2 id="代码">💻<strong>代码</strong></h2>
-<h3 id="生成qr"><strong>生成QR</strong></h3>
-<p>通过zxing库生成QR Texture2D</p>
-<pre><code>public Texture2D generateQR(string qr)
-{
-    Texture2D encoded = new Texture2D(200, 200, TextureFormat.RGBA32, false);
-    var colors = Encode(qr, 200, 200);
-    encoded.SetPixels32(colors);
-    encoded.Apply();
-    return encoded;
-}
-
-private static Color32[] Encode(string textForEncoding, int width, int height) 
-{
-    var writer = new BarcodeWriter
-    {
-        Format = BarcodeFormat.QR_CODE,
-        Options = new QrCodeEncodingOptions
-        {
-            Height = height,
-            Width = width,
-            Margin = 2,
-            PureBarcode = true
-        }
-    };
-    return writer.Write(textForEncoding);
-}
-</code></pre>
-<h3 id="显示到unity编辑器"><strong>显示到Unity编辑器</strong></h3>
-<pre><code>QRtex = QRManager.Instance.generateQR(apkUrl); //获取QR
-GUILayout.Box(QRtex, GUILayout.ExpandWidth(true));//显示QR
-</code></pre>
-</li>
-</ul>
+        <p>1开场<br>
+大家好 ，这是我的2019年终总结<br>
+因为是接近年末才加入项目所以对于项目的总计不是很多，更多的是总结自己的不足与补充了<br>
+2目录<br>
+这是目录，一共分为了4小块，1XX，2XX,3XX,4XX<br>
+3 工作完成情况<br>
+分为三章<br>
+其实还有一个序言 熟悉项目<br>
+unity内编辑器<br>
+这是刚来公司所做的内容，对项目不熟悉</p>
+<p>谢谢，谢谢大家帮助 谢谢公司给机会</p>
 
        </div>
        <div class="post-footer">
         <div class="meta">
          <div class="info">
           <i class="fa fa-sun-o"></i>
-          <span class="date">2020-01-02</span>
+          <span class="date">2020-01-08</span>
           <i class="fa fa-tag"></i>
-          
-          <a class="tag" href="https://bouvet1.github.io/tag/C7cY_GUuL" title="Unity">Unity </a>
           
          </div>
         </div>
@@ -170,16 +126,14 @@ GUILayout.Box(QRtex, GUILayout.ExpandWidth(true));//显示QR
         <a class="fa fa-weibo" href="javascript:void((function(s,d,e){try{}catch(e){}var f='http://service.weibo.com/share/share.php?',u=d.location.href,p=['url=',e(u),'&amp;title=',e(d.title),'&amp;appkey=2924220432'].join('');function a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=620,height=450,left=',(s.width-620)/2,',top=',(s.height-450)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})(screen,document,encodeURIComponent));"></a>
        </div>
        <div class="twitter">
-        <a class="fa fa-twitter" href="http://twitter.com/home?status=,https://bouvet1.github.io/post/unity-bian-ji-qi-jie-mian-zhong-tian-jia-bao-er-wei-ma,;"></a>
+        <a class="fa fa-twitter" href="http://twitter.com/home?status=,https://bouvet1.github.io/post/nian-zhong-zong-jie,;"></a>
        </div>
       </div>
       <div class="pagination">
        <ul class="clearfix">
 
-        <li class="pre pagbuttons"><a class="btn" role="navigation" href="https://bouvet1.github.io/post/lesszhuan-zai-greater" title="&lt;转载&gt;Unity SpriteAtlas">上一篇</a></li>
-         
         
-        <li class="next pagbuttons"><a class="btn" role="navigation" href="https://bouvet1.github.io/post/unity-dui-xiang-chi-feng-zhuang" title=" Unity对象池封装">下一篇</a></li>
+        <li class="next pagbuttons"><a class="btn" role="navigation" href="https://bouvet1.github.io/post/lesszhuan-zai-greater" title=" &lt;转载&gt;Unity SpriteAtlas">下一篇</a></li>
         
        </ul>
       </div>
