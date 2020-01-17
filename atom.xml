@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://bouvet1.github.io</id>
     <title>Bouvet</title>
-    <updated>2020-01-08T02:33:09.721Z</updated>
+    <updated>2020-01-17T06:29:02.053Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://bouvet1.github.io"/>
     <link rel="self" href="https://bouvet1.github.io/atom.xml"/>
@@ -10,28 +10,6 @@
     <logo>https://bouvet1.github.io/images/avatar.png</logo>
     <icon>https://bouvet1.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Bouvet</rights>
-    <entry>
-        <title type="html"><![CDATA[年终总结]]></title>
-        <id>https://bouvet1.github.io/post/nian-zhong-zong-jie</id>
-        <link href="https://bouvet1.github.io/post/nian-zhong-zong-jie">
-        </link>
-        <updated>2020-01-08T02:09:17.000Z</updated>
-        <content type="html"><![CDATA[<p>1开场<br>
-大家好 ，这是我的2019年终总结<br>
-因为是接近年末才加入项目所以对于项目的总计不是很多，更多的是总结自己的不足与补充了<br>
-2目录<br>
-这是目录，一共分为了4小块，1XX，2XX,3XX,4XX<br>
-3 工作完成情况<br>
-分为三章<br>
-其实还有一个序言 熟悉项目<br>
-unity内编辑器<br>
-这是刚来公司所做的内容，对项目不熟悉<br>
-接手UI<br>
-大家都很努力<br>
-GM系统</p>
-<p>谢谢，谢谢大家帮助 谢谢公司给机会</p>
-]]></content>
-    </entry>
     <entry>
         <title type="html"><![CDATA[<转载>Unity SpriteAtlas]]></title>
         <id>https://bouvet1.github.io/post/lesszhuan-zai-greater</id>
@@ -972,6 +950,228 @@ public class cube : MonoBehaviour
 }
 </code></pre>
 <p>项目地址：https://github.com/baishuisr1/Unity-3D-Chart</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Unity 5.4 为模型组一键添加碰撞体(Collider)插件]]></title>
+        <id>https://bouvet1.github.io/post/unity-54-wei-mo-xing-zu-yi-jian-tian-jia-peng-zhuang-ti-collidercha-jian</id>
+        <link href="https://bouvet1.github.io/post/unity-54-wei-mo-xing-zu-yi-jian-tian-jia-peng-zhuang-ti-collidercha-jian">
+        </link>
+        <updated>2017-08-18T06:17:04.000Z</updated>
+        <content type="html"><![CDATA[<p>效果图：<br>
+<img src="http://upload-images.jianshu.io/upload_images/101711-16430da342436f83.gif?imageMogr2/auto-orient/strip" alt="" loading="lazy"></p>
+<p>插件下载地址：<br>
+https://github.com/baishuisr1/Unity-Add-Game-group-Collider-Plugin</p>
+<p>源码:</p>
+<pre><code>using System;
+using UnityEngine;
+using UnityEditor;
+
+public class AddCollider : EditorWindow
+{
+    [MenuItem(&quot;Window/辅助功能&quot;)]
+    static void Window()
+    {
+        AddCollider newWindow = EditorWindow.GetWindow&lt;AddCollider&gt;(&quot;辅助功能&quot;);
+        newWindow.Show();
+    }
+
+
+    private string zoom = &quot;100&quot;;
+
+    void OnGUI()
+    {
+        GUILayout.Label(&quot;碰撞器缩放_百分比(默认100%)&quot;);
+        zoom = GUILayout.TextField(zoom);
+        if (GUILayout.Button(&quot;添加碰撞体积&quot;))
+        {
+            float zoomFloat = Convert.ToSingle(zoom)/100;
+            if (zoomFloat &gt; 1.5)
+            {
+                Debug.Log(&quot;请输入1-150的数&quot;);
+                return;
+            }
+            if (zoomFloat &lt; 0.1)
+            {
+                Debug.Log(&quot;请输入1-150的数&quot;);
+                return;
+            }
+            GameObject gameObject = Selection.activeGameObject;
+            if (gameObject == null)
+            {
+                Debug.Log(&quot;请选择一个物体&quot;);
+                return;
+            }
+
+            Vector3 vector3;
+            vector3 = gameObject.transform.position;
+            gameObject.transform.position =new Vector3(0,0,0);
+
+            float Y_Max = -5000;
+            float Y_Mix = 5000;
+
+            float X_Max = -5000;
+            float X_Mix = 5000;
+
+            float Z_Max = -5000;
+            float Z_Mix = 5000;
+
+            foreach (Transform VARIABLE in gameObject.transform)
+            {
+                BoxCollider boxCollider = VARIABLE.transform.gameObject.AddComponent&lt;BoxCollider&gt;();
+                Vector3[] vector3s = GetBoxColliderVertexPositions(boxCollider);
+                for (int i = 0; i &lt; vector3s.Length; i++)
+                {
+                    if (vector3s[i].y &gt;= Y_Max)
+                    {
+                        Y_Max = vector3s[i].y;
+                    }
+
+                    if (vector3s[i].y &lt;= Y_Mix)
+                    {
+                        Y_Mix = vector3s[i].y;
+                    }
+
+                    if (vector3s[i].x &gt;= X_Max)
+                    {
+                        X_Max = vector3s[i].x;
+                    }
+
+                    if (vector3s[i].x &lt;= X_Mix)
+                    {
+                        X_Mix = vector3s[i].x;
+                    }
+
+                    if (vector3s[i].z &gt;= Z_Max)
+                    {
+                        Z_Max = vector3s[i].z;
+                    }
+
+                    if (vector3s[i].z &lt;= Z_Mix)
+                    {
+                        Z_Mix = vector3s[i].z;
+                    }
+                }
+            }
+
+
+            Y_Max *= zoomFloat;
+            Y_Mix *= zoomFloat;
+
+            X_Max *= zoomFloat;
+            X_Mix *= zoomFloat;
+
+            Z_Max *= zoomFloat;
+            Z_Mix *= zoomFloat;
+
+
+            gameObject.AddComponent&lt;MeshCollider&gt;();
+            Mesh mesh = new Mesh();
+            mesh.name = gameObject.name;
+            int[] triangles = new int[36];
+            Vector3[] vertices = new Vector3[24];
+
+            Vector3 verticeUp1 = new Vector3(X_Mix, Y_Max, Z_Max);
+            vertices[3] = verticeUp1;
+            vertices[9] = verticeUp1;
+            vertices[21] = verticeUp1;
+            Vector3 verticeUp2 = new Vector3(X_Mix, Y_Max, Z_Mix);
+            vertices[5] = verticeUp2;
+            vertices[11] = verticeUp2;
+            vertices[20] = verticeUp2;
+            Vector3 verticeUp3 = new Vector3(X_Max, Y_Max, Z_Mix);
+            vertices[4] = verticeUp3;
+            vertices[10] = verticeUp3;
+            vertices[18] = verticeUp3;
+            Vector3 verticeUp4 = new Vector3(X_Max, Y_Max, Z_Max);
+            vertices[2] = verticeUp4;
+            vertices[8] = verticeUp4;
+            vertices[19] = verticeUp4;
+
+            Vector3 verticeDown1 = new Vector3(X_Max, Y_Mix, Z_Max);
+            vertices[0] = verticeDown1;
+            vertices[14] = verticeDown1;
+            vertices[17] = verticeDown1;
+            Vector3 verticeDown2 = new Vector3(X_Mix, Y_Mix, Z_Max);
+            vertices[1] = verticeDown2;
+            vertices[15] = verticeDown2;
+            vertices[23] = verticeDown2;
+            Vector3 verticeDown3 = new Vector3(X_Mix, Y_Mix, Z_Mix);
+            vertices[7] = verticeDown3;
+            vertices[13] = verticeDown3;
+            vertices[22] = verticeDown3;
+            Vector3 verticeDown4 = new Vector3(X_Max, Y_Mix, Z_Mix);
+            vertices[6] = verticeDown4;
+            vertices[12] = verticeDown4;
+            vertices[16] = verticeDown4;
+
+            int currentCount = 0;
+            for (int i = 0; i &lt; 24; i = i + 4)
+            {
+                //三角形1
+                triangles[currentCount++] = i;
+                triangles[currentCount++] = i + 3;
+                triangles[currentCount++] = i + 1;
+                //三角形2        
+                triangles[currentCount++] = i;
+                triangles[currentCount++] = i + 2;
+                triangles[currentCount++] = i + 3;
+            }
+
+            mesh.vertices = vertices;
+            mesh.triangles = triangles;
+            gameObject.GetComponent&lt;MeshCollider&gt;().sharedMesh = mesh;
+
+            foreach (Transform VARIABLE in gameObject.transform)
+            {
+                DestroyImmediate(VARIABLE.GetComponent&lt;BoxCollider&gt;());
+            }
+            gameObject.transform.position = vector3;
+        }
+    }
+
+    Vector3[] GetBoxColliderVertexPositions(BoxCollider boxcollider)
+    {
+        var vertices = new Vector3[8];
+        
+        vertices[0] =
+            boxcollider.transform.TransformPoint(boxcollider.center +
+                                                 new Vector3(boxcollider.size.x, -boxcollider.size.y, boxcollider.size.z)*
+                                                 0.5f);
+        vertices[1] =
+            boxcollider.transform.TransformPoint(boxcollider.center +
+                                                 new Vector3(-boxcollider.size.x, -boxcollider.size.y,
+                                                     boxcollider.size.z)*0.5f);
+        vertices[2] =
+            boxcollider.transform.TransformPoint(boxcollider.center +
+                                                 new Vector3(-boxcollider.size.x, -boxcollider.size.y,
+                                                     -boxcollider.size.z)*0.5f);
+        vertices[3] =
+            boxcollider.transform.TransformPoint(boxcollider.center +
+                                                 new Vector3(boxcollider.size.x, -boxcollider.size.y,
+                                                     -boxcollider.size.z)*0.5f);
+        
+        vertices[4] =
+            boxcollider.transform.TransformPoint(boxcollider.center +
+                                                 new Vector3(boxcollider.size.x, boxcollider.size.y, boxcollider.size.z)*
+                                                 0.5f);
+        vertices[5] =
+            boxcollider.transform.TransformPoint(boxcollider.center +
+                                                 new Vector3(-boxcollider.size.x, boxcollider.size.y, boxcollider.size.z)*
+                                                 0.5f);
+        vertices[6] =
+            boxcollider.transform.TransformPoint(boxcollider.center +
+                                                 new Vector3(-boxcollider.size.x, boxcollider.size.y,
+                                                     -boxcollider.size.z)*0.5f);
+        vertices[7] =
+            boxcollider.transform.TransformPoint(boxcollider.center +
+                                                 new Vector3(boxcollider.size.x, boxcollider.size.y, -boxcollider.size.z)*
+                                                 0.5f);
+
+        return vertices;
+    }
+}
+</code></pre>
 ]]></content>
     </entry>
 </feed>
